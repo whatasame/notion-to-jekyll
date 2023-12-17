@@ -1,1 +1,1 @@
-console.log("Welcome to notion-to-jekyll!")
+console.log("Welcome to notion-to-jekyll!");
