@@ -1,17 +1,34 @@
-import { Client } from "@notionhq/client";
+import { Client, LogLevel } from "@notionhq/client";
 
 export class NotionClient {
-  private readonly client: Client;
-  private readonly databaseId: string;
+  #client: Client;
+  #databaseId: string;
 
-  constructor(apiKey: string, databaseId: string) {
-    this.client = new Client({
+  constructor(apiKey: string, databaseId: string, logLevel?: LogLevel) {
+    this.#client = new Client({
       auth: apiKey,
+      logLevel: logLevel,
     });
-    this.databaseId = databaseId;
+    this.#databaseId = databaseId;
   }
 
   public async retrieveDatabase() {
-    return this.client.databases.retrieve({ database_id: this.databaseId });
+    const databaseResponsePromise = this.#client.databases.retrieve({
+      database_id: this.#databaseId,
+    });
+
+    return databaseResponsePromise;
+  }
+
+  public async queryDatabaseAfterLastEditedTime(after: string) {
+    return this.#client.databases.query({
+      database_id: this.#databaseId,
+      filter: {
+        property: "Last edited time",
+        date: {
+          after: after,
+        },
+      },
+    });
   }
 }
