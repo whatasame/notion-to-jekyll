@@ -1,8 +1,8 @@
 import { Client, isFullDatabase, isFullPage, LogLevel } from "@notionhq/client";
-import { Page, Pages } from "../../tests/core/response";
+import { Page, Pages } from "./model";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from "../../tests/config";
-import { isDateProperty, validateProperty } from "../../tests/core/helper";
+import { isDateProperty, validateProperty } from "./helper";
 
 export class NotionClient {
   readonly #client: Client;
