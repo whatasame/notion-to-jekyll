@@ -1,0 +1,14 @@
+on:
+  workflow_dispatch:
+
+jobs:
+  local-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Test local action
+        id: test-action
+        uses: ./
