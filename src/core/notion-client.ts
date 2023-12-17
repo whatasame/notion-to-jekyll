@@ -1,12 +1,12 @@
-import { Client, isFullPage, LogLevel } from "@notionhq/client";
+import { Client, isFullDatabase, isFullPage, LogLevel } from "@notionhq/client";
 import { Page, Pages } from "../../tests/core/response";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
-import { SYNCHRONIZE_TIME_PROPERTY } from "../../tests/config";
-import { isDateProperty } from "../../tests/core/helper";
+import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from "../../tests/config";
+import { isDateProperty, validateProperty } from "../../tests/core/helper";
 
 export class NotionClient {
-  #client: Client;
-  #databaseId: string;
+  readonly #client: Client;
+  readonly #databaseId: string;
 
   constructor(apiKey: string, databaseId: string, logLevel?: LogLevel) {
     this.#client = new Client({
@@ -16,13 +16,18 @@ export class NotionClient {
     this.#databaseId = databaseId;
   }
 
-  // TODO: NTY property validation
-  public async retrieveDatabase() {
-    const databaseResponsePromise = await this.#client.databases.retrieve({
+  // TODO: Run immediately after instantiation
+  public async validateDatabaseProperties() {
+    const database = await this.#client.databases.retrieve({
       database_id: this.#databaseId,
     });
+    if (!isFullDatabase(database)) {
+      throw new Error("Not a database");
+    }
 
-    return databaseResponsePromise;
+    validateProperty(database.properties, TAGS_NAME, "multi_select");
+    validateProperty(database.properties, SYNC_TIME_NAME, "date");
+    validateProperty(database.properties, POST_PATH_NAME, "rich_text");
   }
 
   public async getPages(page_size?: number, cursor?: string): Promise<Pages> {
@@ -40,11 +45,9 @@ export class NotionClient {
   }
 
   #extractPage(result: PageObjectResponse): Page {
-    const synchronizedTime = result.properties[SYNCHRONIZE_TIME_PROPERTY];
+    const synchronizedTime = result.properties[SYNC_TIME_NAME];
     if (!isDateProperty(synchronizedTime)) {
-      throw new Error(
-        `Property ${SYNCHRONIZE_TIME_PROPERTY} is not a date property`,
-      );
+      throw new Error(`Property ${SYNC_TIME_NAME} is not a date property`);
     }
 
     return {

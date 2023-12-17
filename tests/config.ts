@@ -1,4 +1,6 @@
-export const SYNCHRONIZE_TIME_PROPERTY = "[notion-to-jekyll] sync time";
+export const TAGS_NAME = "Tags";
+export const SYNC_TIME_NAME = "[notion-to-jekyll] sync time";
+export const POST_PATH_NAME = "[notion-to-jekyll] post path";
 
 const API_KEY_ENV = "NOTION_TO_JEKYLL_API_KEY";
 const DATABASE_ID_ENV = "NOTION_TO_JEKYLL_DATABASE_ID";

@@ -9,10 +9,10 @@ describe("Notion client", () => {
     LogLevel.DEBUG,
   );
 
-  it("should be able to retrieve a database information", async () => {
-    const database = await notionClient.retrieveDatabase();
-
-    expect(database).toBeDefined();
+  it("should be able to validate database has correct properties", async () => {
+    await expect(
+      notionClient.validateDatabaseProperties(),
+    ).resolves.toBeUndefined();
   });
 
   it("should be able to query pages of database", async () => {
