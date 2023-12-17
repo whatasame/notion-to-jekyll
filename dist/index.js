@@ -7,7 +7,7 @@
 /************************************************************************/
 var __webpack_exports__ = {};
 
-console.log("Hello world");
+console.log('Hello world');
 
 module.exports = __webpack_exports__;
 /******/ })()

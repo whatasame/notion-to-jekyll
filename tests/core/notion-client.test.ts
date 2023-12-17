@@ -18,8 +18,6 @@ describe('Notion client', () => {
   it('should be able to query pages of database', async () => {
     const pages = await notionClient.getPages()
 
-    console.log(JSON.stringify(pages, null, 2))
-
     expect(pages.contents).toBeDefined()
     for (const page of pages.contents) {
       expect(page.id).toBeDefined()
