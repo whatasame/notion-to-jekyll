@@ -1,0 +1,11 @@
+name: "Notion to Jekyll"
+description: "Synchronize Notion to Jekyll"
+author: "whatasame"
+
+branding:
+  icon: "heart"
+  color: "red"
+
+runs:
+  using: node20
+  main: dist/index.js
