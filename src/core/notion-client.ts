@@ -1,4 +1,8 @@
-import { Client, LogLevel } from "@notionhq/client";
+import { Client, isFullPage, LogLevel } from "@notionhq/client";
+import { Page, Pages } from "../../tests/core/response";
+import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import { SYNCHRONIZE_TIME_PROPERTY } from "../../tests/config";
+import { isDateProperty } from "../../tests/core/helper";
 
 export class NotionClient {
   #client: Client;
@@ -12,23 +16,41 @@ export class NotionClient {
     this.#databaseId = databaseId;
   }
 
+  // TODO: NTY property validation
   public async retrieveDatabase() {
-    const databaseResponsePromise = this.#client.databases.retrieve({
+    const databaseResponsePromise = await this.#client.databases.retrieve({
       database_id: this.#databaseId,
     });
 
     return databaseResponsePromise;
   }
 
-  public async queryDatabaseAfterLastEditedTime(after: string) {
-    return this.#client.databases.query({
+  public async getPages(page_size?: number, cursor?: string): Promise<Pages> {
+    const response = await this.#client.databases.query({
       database_id: this.#databaseId,
-      filter: {
-        property: "Last edited time",
-        date: {
-          after: after,
-        },
-      },
+      page_size: page_size ?? 100,
+      start_cursor: cursor,
     });
+
+    return {
+      contents: response.results.filter(isFullPage).map(this.#extractPage),
+      has_more: response.has_more,
+      next_cursor: response.next_cursor,
+    };
+  }
+
+  #extractPage(result: PageObjectResponse): Page {
+    const synchronizedTime = result.properties[SYNCHRONIZE_TIME_PROPERTY];
+    if (!isDateProperty(synchronizedTime)) {
+      throw new Error(
+        `Property ${SYNCHRONIZE_TIME_PROPERTY} is not a date property`,
+      );
+    }
+
+    return {
+      id: result.id,
+      last_edited_time: result.last_edited_time,
+      synchronized_time: synchronizedTime.date?.start ?? null,
+    };
   }
 }

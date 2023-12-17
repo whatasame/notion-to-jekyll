@@ -1,5 +1,5 @@
 import { NotionClient } from "../../src/core/notion-client";
-import { notionApiKey, notionDatabaseId } from "../secret-config";
+import { notionApiKey, notionDatabaseId } from "../config";
 import { LogLevel } from "@notionhq/client";
 
 describe("Notion client", () => {
@@ -15,13 +15,18 @@ describe("Notion client", () => {
     expect(database).toBeDefined();
   });
 
-  it("should be able to query a database filtering after specific last edited time", async () => {
-    const database = await notionClient.retrieveDatabase();
+  it("should be able to query pages of database", async () => {
+    const pages = await notionClient.getPages();
 
-    const query = await notionClient.queryDatabaseAfterLastEditedTime(
-      "2023-12-17T07:09:00.000Z",
-    );
+    console.log(JSON.stringify(pages, null, 2));
 
-    expect(query).toBeDefined();
+    expect(pages.contents).toBeDefined();
+    pages.contents.forEach((page) => {
+      expect(page.id).toBeDefined();
+      expect(page.last_edited_time).toBeDefined();
+      expect(page.synchronized_time).toBeDefined();
+    });
+    expect(pages.has_more).toBeDefined();
+    expect(pages.next_cursor).toBeDefined();
   });
 });
