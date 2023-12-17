@@ -15,7 +15,7 @@ describe("Notion client", () => {
     expect(database).toBeDefined();
   });
 
-  it("shoud be able to query a database filtering after specific last edited time", async () => {
+  it("should be able to query a database filtering after specific last edited time", async () => {
     const database = await notionClient.retrieveDatabase();
 
     const query = await notionClient.queryDatabaseAfterLastEditedTime(
