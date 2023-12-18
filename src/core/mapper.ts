@@ -23,6 +23,7 @@ export function toPage(result: PageObjectResponse): Page {
   return {
     id: result.id,
     title: title.title[0].plain_text,
+    created_time: result.created_time,
     last_edited_time: result.last_edited_time,
     synchronized_time: synchronizedTime.date?.start ?? null,
     post_path: postPath.rich_text[0]?.plain_text ?? null

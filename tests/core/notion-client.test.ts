@@ -16,6 +16,7 @@ describe('Notion client', () => {
     for (const page of pages.contents) {
       expect(page.id).toBeDefined()
       expect(page.title).toBeDefined()
+      expect(page.created_time).toBeDefined()
       expect(page.last_edited_time).toBeDefined()
       expect(page.synchronized_time).toBeDefined()
       expect(page.post_path).toBeDefined()
