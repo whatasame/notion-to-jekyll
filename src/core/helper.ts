@@ -1,6 +1,7 @@
 import {
   DatePropertyItemObjectResponse,
-  RichTextPropertyItemObjectResponse
+  RichTextPropertyItemObjectResponse,
+  TitlePropertyItemObjectResponse
 } from '@notionhq/client/build/src/api-endpoints'
 
 export function validateProperty(
@@ -17,6 +18,12 @@ export function validateProperty(
       `Property ${propertyName} is not a ${expectedType} property`
     )
   }
+}
+
+export function isTitleProperty(response: {
+  type: string
+}): response is TitlePropertyItemObjectResponse {
+  return response.type === 'title'
 }
 
 export function isDateProperty(response: {
