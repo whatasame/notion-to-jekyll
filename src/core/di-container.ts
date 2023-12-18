@@ -9,7 +9,7 @@ let notionToMarkdown: NotionToMarkdown | null = null
 let notionClient: NotionClient | null = null
 let notionToMarkdownClient: NotionToMarkdownClient | null = null
 
-function getClient() {
+function getClient(): Client {
   if (client === null) {
     client = new Client({
       auth: notionApiKey,
@@ -21,7 +21,7 @@ function getClient() {
   return client
 }
 
-function getNotionToMarkdown() {
+function getNotionToMarkdown(): NotionToMarkdown {
   if (notionToMarkdown === null) {
     notionToMarkdown = new NotionToMarkdown({
       notionClient: getClient(),
@@ -31,14 +31,14 @@ function getNotionToMarkdown() {
   return notionToMarkdown
 }
 
-export function getNotionClient() {
+export function getNotionClient(): NotionClient {
   if (notionClient === null) {
     notionClient = new NotionClient(getClient(), notionDatabaseId)
   }
   return notionClient
 }
 
-export function getNotionToMarkdownClient() {
+export function getNotionToMarkdownClient(): NotionToMarkdownClient {
   if (notionToMarkdownClient === null) {
     notionToMarkdownClient = new NotionToMarkdownClient(getNotionToMarkdown())
   }
