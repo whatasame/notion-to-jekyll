@@ -26,12 +26,13 @@ jobs:
           node-version-file: .node-version
           cache: npm
 
-      - name: Environment variables injection
-        id: env-injection
+      - name: Environment variables injection for local testing
+        id: test-env-injection
         run: |
           echo "NOTION_TO_JEKYLL_API_KEY=${{ secrets.NOTION_TO_JEKYLL_API_KEY }}" >> $GITHUB_ENV
           echo "NOTION_TO_JEKYLL_DATABASE_ID=${{ secrets.NOTION_TO_JEKYLL_DATABASE_ID }}" >> $GITHUB_ENV
-          
+          echo "NOTION_TO_JEKYLL_PAGE_ID=${{ secrets.NOTION_TO_JEKYLL_PAGE_ID }}" >> $GITHUB_ENV
+
       - name: Install Dependencies
         id: npm-ci
         run: npm ci
