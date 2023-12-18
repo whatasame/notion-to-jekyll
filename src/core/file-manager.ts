@@ -13,13 +13,9 @@ export async function saveMarkdown(
   const filename = `${yymmdd}-${hyphenatedTitle}.md`
   const filePath = path.join(BASE_POST_PATH, filename)
 
-  try {
-    await fs.outputFile(filePath, markdown, 'utf-8')
-    console.log(`Saved ${filePath}`)
-  } catch (error) {
-    console.error(`Failed to save ${filePath}`, error)
-    throw error
-  }
+  const data = [generateMetadata(page), markdown].join('\n\n')
+
+  await fs.outputFile(filePath, data, 'utf-8')
 
   return {
     title: page.title,
@@ -30,4 +26,19 @@ export async function saveMarkdown(
     synchronized_time: new Date().toISOString(),
     post_path: filePath
   }
+}
+
+function generateMetadata(page: Page): string {
+  const yymmdd = page.created_time.split('T')[0]
+
+  const metadataLines = [
+    '---',
+    'layout: post',
+    `title: ${page.title}`,
+    `date: ${yymmdd}`,
+    `tags: [${page.tags.join(', ')}]`,
+    '---'
+  ]
+
+  return metadataLines.join('\n')
 }

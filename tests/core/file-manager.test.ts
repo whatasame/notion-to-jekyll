@@ -18,14 +18,12 @@ describe('FileManager', () => {
     post_path: null
   }
 
-  // TODO: Validate metadata
-  const markdown = ` 
-## Heading 2
+  const markdown = `## Heading 2
 
 This is a test page.
 `
 
-  it('should be able to save markdown file', async () => {
+  it('should save markdown file with correct metadata', async () => {
     const uploadedPage = await saveMarkdown(page, markdown)
 
     expect(uploadedPage).toEqual({
@@ -37,6 +35,27 @@ This is a test page.
       synchronized_time: expect.any(String),
       post_path: expect.any(String)
     })
-    expect(await fs.pathExists(uploadedPage.post_path as string)).toBe(true)
+  })
+
+  it('should have correct metadata in the saved markdown file', async () => {
+    const uploadedPage = await saveMarkdown(page, markdown)
+
+    const fileContent = await fs.readFile(
+      uploadedPage.post_path as string,
+      'utf-8'
+    )
+
+    expect(fileContent).toBe(`---
+layout: post
+title: null sync time
+date: 2023-12-17
+categories: [infra, tools]
+tags: [null]
+---
+
+## Heading 2
+
+This is a test page.
+`)
   })
 })
