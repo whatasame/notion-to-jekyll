@@ -9,6 +9,11 @@ const git = getGitClient()
 
 let originalBranch: string
 
+beforeAll(async () => {
+  await git.addConfig('user.email', 'test@email.com')
+  await git.addConfig('user.name', 'test')
+})
+
 beforeEach(async () => {
   originalBranch = (await git.branchLocal()).current
   await git.checkoutBranch(testBranchName, originalBranch)
