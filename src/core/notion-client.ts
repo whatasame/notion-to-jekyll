@@ -30,10 +30,10 @@ export class NotionClient {
     validateProperty(database.properties, POST_PATH_NAME, 'rich_text')
   }
 
-  async getPages(page_size?: number, cursor?: string): Promise<Pages> {
+  async getPages(page_size: number = 100, cursor?: string): Promise<Pages> {
     const response = await this.#client.databases.query({
       database_id: this.#databaseId,
-      page_size: page_size ?? 100,
+      page_size: page_size,
       start_cursor: cursor
     })
 
