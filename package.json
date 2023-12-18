@@ -66,6 +66,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.14"
+    "@notionhq/client": "^2.2.14",
+    "notion-to-md": "^3.1.1"
   }
 }

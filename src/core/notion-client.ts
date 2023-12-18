@@ -8,6 +8,7 @@ export class NotionClient {
   readonly #client: Client
   readonly #databaseId: string
 
+  // TODO: Client injection
   constructor(apiKey: string, databaseId: string, logLevel?: LogLevel) {
     this.#client = new Client({
       auth: apiKey,
