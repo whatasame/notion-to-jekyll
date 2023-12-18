@@ -1,7 +1,8 @@
-import { NotionToMarkdownClient } from '../../src/core/notion-to-markdown-client'
-import { notionToMarkdownClient } from '../../src/core/di-container'
+import { getNotionToMarkdownClient } from '../../src/core/di-container'
 
 describe('NotionToMarkdownClient', () => {
+  const notionToMarkdownClient = getNotionToMarkdownClient()
+
   const pageId = process.env.NOTION_TO_JEKYLL_PAGE_ID
   if (!pageId) {
     throw new Error(
@@ -14,4 +15,6 @@ describe('NotionToMarkdownClient', () => {
 
     expect(markdown).toBeTruthy()
   })
+
+  // TODO: page id로 markdown 파일을 __posts에 저장하는 테스트
 })

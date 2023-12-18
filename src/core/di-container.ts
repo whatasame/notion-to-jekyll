@@ -1,19 +1,46 @@
-import { Client } from '@notionhq/client'
+import { Client, LogLevel } from '@notionhq/client'
 import { notionApiKey, notionDatabaseId } from './config'
 import { NotionToMarkdown } from 'notion-to-md'
 import { NotionToMarkdownClient } from './notion-to-markdown-client'
 import { NotionClient } from './notion-client'
 
-const client = new Client({ auth: notionApiKey })
-const notionToMarkdown = new NotionToMarkdown({
-  notionClient: client,
-  config: { separateChildPage: true }
-})
+let client: Client | null = null
+let notionToMarkdown: NotionToMarkdown | null = null
+let notionClient: NotionClient | null = null
+let notionToMarkdownClient: NotionToMarkdownClient | null = null
 
-export const notionClient = new NotionClient(client, notionDatabaseId)
-export const notionToMarkdownClient = new NotionToMarkdownClient(
-  notionToMarkdown
-)
+function getClient() {
+  if (client === null) {
+    client = new Client({
+      auth: notionApiKey,
+      logLevel: process.env.NOTION_TO_JEKYLL_DEBUG
+        ? LogLevel.DEBUG
+        : LogLevel.WARN
+    })
+  }
+  return client
+}
 
-// TODO getter
-// TODO develop debug mode
+function getNotionToMarkdown() {
+  if (notionToMarkdown === null) {
+    notionToMarkdown = new NotionToMarkdown({
+      notionClient: getClient(),
+      config: { separateChildPage: true }
+    })
+  }
+  return notionToMarkdown
+}
+
+export function getNotionClient() {
+  if (notionClient === null) {
+    notionClient = new NotionClient(getClient(), notionDatabaseId)
+  }
+  return notionClient
+}
+
+export function getNotionToMarkdownClient() {
+  if (notionToMarkdownClient === null) {
+    notionToMarkdownClient = new NotionToMarkdownClient(getNotionToMarkdown())
+  }
+  return notionToMarkdownClient
+}

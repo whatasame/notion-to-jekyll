@@ -1,13 +1,7 @@
-import { NotionClient } from '../../src/core/notion-client'
-import { notionApiKey, notionDatabaseId } from '../../src/core/config'
-import { LogLevel } from '@notionhq/client'
+import { getNotionClient } from '../../src/core/di-container'
 
 describe('Notion client', () => {
-  const notionClient = new NotionClient(
-    notionApiKey,
-    notionDatabaseId,
-    LogLevel.DEBUG
-  )
+  const notionClient = getNotionClient()
 
   it('should be able to validate database has correct properties', async () => {
     await expect(
