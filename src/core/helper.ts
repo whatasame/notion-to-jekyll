@@ -1,4 +1,9 @@
-import { DatePropertyItemObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import {
+  DatePropertyItemObjectResponse,
+  MultiSelectPropertyItemObjectResponse,
+  RichTextPropertyItemObjectResponse,
+  TitlePropertyItemObjectResponse
+} from '@notionhq/client/build/src/api-endpoints'
 
 export function validateProperty(
   properties: Record<string, { type: string }>,
@@ -16,8 +21,26 @@ export function validateProperty(
   }
 }
 
+export function isTitleProperty(response: {
+  type: string
+}): response is TitlePropertyItemObjectResponse {
+  return response.type === 'title'
+}
+
+export function isMultiSelectProperty(response: {
+  type: string
+}): response is MultiSelectPropertyItemObjectResponse {
+  return response.type === 'multi_select'
+}
+
 export function isDateProperty(response: {
   type: string
 }): response is DatePropertyItemObjectResponse {
   return response.type === 'date'
+}
+
+export function isRichTextProperty(response: {
+  type: string
+}): response is RichTextPropertyItemObjectResponse {
+  return response.type === 'rich_text'
 }

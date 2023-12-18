@@ -1,13 +1,7 @@
-import { NotionClient } from '../../src/core/notion-client'
-import { notionApiKey, notionDatabaseId } from '../config'
-import { LogLevel } from '@notionhq/client'
+import { getNotionClient } from '../../src/core/di-container'
 
 describe('Notion client', () => {
-  const notionClient = new NotionClient(
-    notionApiKey,
-    notionDatabaseId,
-    LogLevel.DEBUG
-  )
+  const notionClient = getNotionClient()
 
   it('should be able to validate database has correct properties', async () => {
     await expect(
@@ -21,8 +15,13 @@ describe('Notion client', () => {
     expect(pages.contents).toBeDefined()
     for (const page of pages.contents) {
       expect(page.id).toBeDefined()
+      expect(page.title).toBeDefined()
+      expect(page.categories).toBeDefined()
+      expect(page.tags).toBeDefined()
+      expect(page.created_time).toBeDefined()
       expect(page.last_edited_time).toBeDefined()
       expect(page.synchronized_time).toBeDefined()
+      expect(page.post_path).toBeDefined()
     }
     expect(pages.has_more).toBeDefined()
     expect(pages.next_cursor).toBeDefined()
