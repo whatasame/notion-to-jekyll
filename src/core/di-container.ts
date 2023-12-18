@@ -1,5 +1,5 @@
 import { Client, LogLevel } from '@notionhq/client'
-import { notionApiKey, notionDatabaseId } from './config'
+import { notionApiKey, notionDatabaseId } from '../config/secret'
 import { NotionToMarkdown } from 'notion-to-md'
 import { NotionToMarkdownClient } from './notion-to-markdown-client'
 import { NotionClient } from './notion-client'

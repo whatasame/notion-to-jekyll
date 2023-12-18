@@ -1,8 +1,8 @@
 import { getNotionClient, getNotionToMarkdownClient } from './core/di-container'
-import { filterNotSynchronized } from './core/utils'
-import { saveMarkdown } from './core/file-manager'
+import { filterNotSynchronized } from './utils/filter'
+import { saveMarkdown } from './system/file-manager'
 import { commit } from './system/git'
-import { BASE_POST_PATH } from './core/constant'
+import { BASE_POST_PATH } from './config/constant'
 
 export async function run(): Promise<void> {
   const notionClient = getNotionClient()

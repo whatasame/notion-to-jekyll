@@ -1,7 +1,7 @@
-import { Page } from './model'
+import { Page } from '../core/model'
 import * as fs from 'fs-extra'
 import path from 'node:path'
-import { BASE_POST_PATH } from './constant'
+import { BASE_POST_PATH } from '../config/constant'
 
 export async function saveMarkdown(
   page: Page,
