@@ -11,6 +11,7 @@ describe('FileManager', () => {
   const page: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
     title: 'null sync time',
+    categories: ['infra', 'tools'],
     tags: ['null'],
     created_time: '2023-12-17T15:43:00.000Z',
     last_edited_time: '2023-12-18T15:43:00.000Z',
@@ -28,8 +29,9 @@ This is a test page.
 
     expect(uploadedPage).toEqual({
       id: page.id,
-      tags: page.tags,
       title: page.title,
+      categories: page.categories,
+      tags: page.tags,
       created_time: page.created_time,
       last_edited_time: page.last_edited_time,
       synchronized_time: expect.any(String),

@@ -1,6 +1,7 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import { Page } from './model'
 import {
+  CATEGORIES_NAME,
   POST_PATH_NAME,
   SYNC_TIME_NAME,
   TAGS_NAME,
@@ -25,6 +26,13 @@ export function toPage(result: PageObjectResponse): Page {
     throw new Error(`Property ${TAGS_NAME} is not a multi_select property`)
   }
 
+  const categories = result.properties[CATEGORIES_NAME]
+  if (!isMultiSelectProperty(categories)) {
+    throw new Error(
+      `Property ${CATEGORIES_NAME} is not a multi_select property`
+    )
+  }
+
   const synchronizedTime = result.properties[SYNC_TIME_NAME]
   if (!isDateProperty(synchronizedTime)) {
     throw new Error(`Property ${SYNC_TIME_NAME} is not a date property`)
@@ -38,6 +46,7 @@ export function toPage(result: PageObjectResponse): Page {
   return {
     id: result.id,
     title: title.title[0].plain_text,
+    categories: categories.multi_select.map(category => category.name),
     tags: tags.multi_select.map(tag => tag.name),
     created_time: result.created_time,
     last_edited_time: result.last_edited_time,

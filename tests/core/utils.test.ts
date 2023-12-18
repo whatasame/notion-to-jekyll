@@ -5,6 +5,7 @@ describe('Pages are given', () => {
   const nullSyncTime: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
     title: 'null sync time',
+    categories: [],
     tags: [],
     created_time: '2023-12-17T15:43:00.000Z',
     last_edited_time: '2023-12-17T15:43:00.000Z',
@@ -14,6 +15,7 @@ describe('Pages are given', () => {
   const earlierSyncTime: Page = {
     id: 'abcdef01-2345-6789-abcd-ef0123456789',
     title: 'earlier sync time',
+    categories: ['sync', 'time'],
     tags: ['earlier', 'sync', 'time'],
     created_time: '2023-12-17T15:43:00.000Z',
     last_edited_time: '2023-12-17T15:43:00.000Z',
@@ -23,6 +25,7 @@ describe('Pages are given', () => {
   const laterSyncTime: Page = {
     id: 'fedcba09-8765-4321-fedc-ba0987654321',
     title: 'later sync time',
+    categories: ['sync', 'test'],
     tags: ['later', 'sync', 'time'],
     created_time: '2023-12-17T15:43:00.000Z',
     last_edited_time: '2023-12-17T15:43:00.000Z',
@@ -32,6 +35,7 @@ describe('Pages are given', () => {
   const sameSyncTime: Page = {
     id: '98765432-10ef-cdba-9876-543210fedcba',
     title: 'same sync time',
+    categories: ['test', 'time'],
     tags: ['same', 'sync', 'time'],
     created_time: '2023-12-17T15:43:00.000Z',
     last_edited_time: '2023-12-17T15:43:00.000Z',

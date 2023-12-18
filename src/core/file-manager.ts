@@ -20,6 +20,7 @@ export async function saveMarkdown(
   return {
     title: page.title,
     id: page.id,
+    categories: page.categories,
     tags: page.tags,
     created_time: page.created_time,
     last_edited_time: page.last_edited_time,
@@ -36,6 +37,7 @@ function generateMetadata(page: Page): string {
     'layout: post',
     `title: ${page.title}`,
     `date: ${yymmdd}`,
+    `categories: [${page.categories.join(', ')}]`,
     `tags: [${page.tags.join(', ')}]`,
     '---'
   ]
