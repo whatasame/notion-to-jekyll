@@ -1,5 +1,5 @@
 import { Client } from '@notionhq/client'
-import { notionApiKey } from '../../tests/config'
+import { notionApiKey } from './config'
 import { NotionToMarkdown } from 'notion-to-md'
 import { NotionToMarkdownClient } from './notion-to-markdown-client'
 

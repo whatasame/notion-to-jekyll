@@ -3,10 +3,6 @@ import {
   RichTextPropertyItemObjectResponse
 } from '@notionhq/client/build/src/api-endpoints'
 
-export function hasString(value: unknown): value is string {
-  return typeof value === 'string' && value.trim() !== ''
-}
-
 export function validateProperty(
   properties: Record<string, { type: string }>,
   propertyName: string,

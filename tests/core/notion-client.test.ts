@@ -1,5 +1,5 @@
 import { NotionClient } from '../../src/core/notion-client'
-import { notionApiKey, notionDatabaseId } from '../config'
+import { notionApiKey, notionDatabaseId } from '../../src/core/config'
 import { LogLevel } from '@notionhq/client'
 
 describe('Notion client', () => {
