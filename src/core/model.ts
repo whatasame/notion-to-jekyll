@@ -5,8 +5,9 @@ export type Pages = {
 }
 
 export type Page = {
-  title: string
   id: string
+  title: string
+  tags: string[]
   created_time: string
   last_edited_time: string
   synchronized_time: string | null

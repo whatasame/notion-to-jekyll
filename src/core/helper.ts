@@ -1,5 +1,6 @@
 import {
   DatePropertyItemObjectResponse,
+  MultiSelectPropertyItemObjectResponse,
   RichTextPropertyItemObjectResponse,
   TitlePropertyItemObjectResponse
 } from '@notionhq/client/build/src/api-endpoints'
@@ -24,6 +25,12 @@ export function isTitleProperty(response: {
   type: string
 }): response is TitlePropertyItemObjectResponse {
   return response.type === 'title'
+}
+
+export function isMultiSelectProperty(response: {
+  type: string
+}): response is MultiSelectPropertyItemObjectResponse {
+  return response.type === 'multi_select'
 }
 
 export function isDateProperty(response: {
