@@ -3,11 +3,14 @@ import { notionApiKey, notionDatabaseId } from './config'
 import { NotionToMarkdown } from 'notion-to-md'
 import { NotionToMarkdownClient } from './notion-to-markdown-client'
 import { NotionClient } from './notion-client'
+import { simpleGit, SimpleGit } from 'simple-git'
 
 let client: Client | null = null
 let notionToMarkdown: NotionToMarkdown | null = null
 let notionClient: NotionClient | null = null
 let notionToMarkdownClient: NotionToMarkdownClient | null = null
+
+let gitClient: SimpleGit | null = null
 
 function getClient(): Client {
   if (client === null) {
@@ -43,4 +46,11 @@ export function getNotionToMarkdownClient(): NotionToMarkdownClient {
     notionToMarkdownClient = new NotionToMarkdownClient(getNotionToMarkdown())
   }
   return notionToMarkdownClient
+}
+
+export function getGitClient(): SimpleGit {
+  if (gitClient === null) {
+    gitClient = simpleGit()
+  }
+  return gitClient
 }

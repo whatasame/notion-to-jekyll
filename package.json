@@ -69,6 +69,7 @@
   "dependencies": {
     "@notionhq/client": "^2.2.14",
     "fs-extra": "^11.2.0",
-    "notion-to-md": "^3.1.1"
+    "notion-to-md": "^3.1.1",
+    "simple-git": "^3.21.0"
   }
 }
