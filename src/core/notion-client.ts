@@ -1,4 +1,4 @@
-import { Client, isFullDatabase, isFullPage, LogLevel } from '@notionhq/client'
+import { Client, isFullDatabase, isFullPage } from '@notionhq/client'
 import { Pages } from './model'
 import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from './constant'
 import { validateProperty } from './helper'
@@ -8,12 +8,8 @@ export class NotionClient {
   readonly #client: Client
   readonly #databaseId: string
 
-  // TODO: Client injection
-  constructor(apiKey: string, databaseId: string, logLevel?: LogLevel) {
-    this.#client = new Client({
-      auth: apiKey,
-      logLevel
-    })
+  constructor(client: Client, databaseId: string) {
+    this.#client = client
     this.#databaseId = databaseId
   }
 
