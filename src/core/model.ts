@@ -8,4 +8,5 @@ export type Page = {
   id: string
   last_edited_time: string
   synchronized_time: string | null
+  post_path: string | null
 }

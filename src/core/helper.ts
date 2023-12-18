@@ -1,4 +1,7 @@
-import { DatePropertyItemObjectResponse } from '@notionhq/client/build/src/api-endpoints'
+import {
+  DatePropertyItemObjectResponse,
+  RichTextPropertyItemObjectResponse
+} from '@notionhq/client/build/src/api-endpoints'
 
 export function validateProperty(
   properties: Record<string, { type: string }>,
@@ -20,4 +23,10 @@ export function isDateProperty(response: {
   type: string
 }): response is DatePropertyItemObjectResponse {
   return response.type === 'date'
+}
+
+export function isRichTextProperty(response: {
+  type: string
+}): response is RichTextPropertyItemObjectResponse {
+  return response.type === 'rich_text'
 }

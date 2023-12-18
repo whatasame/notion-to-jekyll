@@ -23,6 +23,7 @@ describe('Notion client', () => {
       expect(page.id).toBeDefined()
       expect(page.last_edited_time).toBeDefined()
       expect(page.synchronized_time).toBeDefined()
+      expect(page.post_path).toBeDefined()
     }
     expect(pages.has_more).toBeDefined()
     expect(pages.next_cursor).toBeDefined()
