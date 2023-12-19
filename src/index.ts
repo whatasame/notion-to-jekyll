@@ -1,25 +1,12 @@
-import { getNotionClient, getNotionToMarkdownClient } from './core/di-container'
-import { filterNotSynchronized } from './utils/filter'
-import { saveMarkdown } from './system/file-manager'
-import { commit } from './system/git'
-import { BASE_POST_PATH } from './config/constant'
+import * as core from '@actions/core'
+import { initialize } from './config/secret'
+import { run } from './main'
 
-export async function run(): Promise<void> {
-  const notionClient = getNotionClient()
-  const notionToMarkdownClient = getNotionToMarkdownClient()
-
-  await notionClient.validateDatabaseProperties()
-  const pages = await notionClient.getPages()
-  const targetPages = filterNotSynchronized(pages)
-
-  for (const page of targetPages) {
-    const markdown = await notionToMarkdownClient.getMarkdownFromPage(page.id)
-
-    // TODO: Update Notion page property
-    await saveMarkdown(page, markdown)
-  }
-
-  await commit(BASE_POST_PATH, 'Update post')
-}
+initialize(
+  core.getInput('notion_api_key'),
+  core.getInput('notion_database_id'),
+  core.getInput('commit_email'),
+  core.getInput('commit_author')
+)
 
 run()

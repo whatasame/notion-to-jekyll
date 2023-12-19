@@ -1,6 +1,12 @@
 import { getNotionClient } from '../../src/core/di-container'
+import {
+  initializeNotionApiKey,
+  initializeNotionDatabaseId
+} from '../../src/config/secret'
 
 describe('Notion client', () => {
+  initializeNotionApiKey(process.env.NOTION_TO_JEKYLL_API_KEY!)
+  initializeNotionDatabaseId(process.env.NOTION_TO_JEKYLL_DATABASE_ID!)
   const notionClient = getNotionClient()
 
   it('should be able to validate database has correct properties', async () => {

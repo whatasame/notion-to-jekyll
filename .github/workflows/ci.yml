@@ -33,6 +33,12 @@ jobs:
           echo "NOTION_TO_JEKYLL_DATABASE_ID=${{ secrets.NOTION_TO_JEKYLL_DATABASE_ID }}" >> $GITHUB_ENV
           echo "NOTION_TO_JEKYLL_PAGE_ID=${{ secrets.NOTION_TO_JEKYLL_PAGE_ID }}" >> $GITHUB_ENV
 
+      - name: Set Git config
+        id: git-config
+        run: |
+          git config --global user.name ${{ github.actor }}
+          git config --global user.email ${{ github.actor }}@users.noreply.github.com
+
       - name: Install Dependencies
         id: npm-ci
         run: npm ci

@@ -1,9 +1,9 @@
 import { Client, LogLevel } from '@notionhq/client'
-import { notionApiKey, notionDatabaseId } from '../config/secret'
 import { NotionToMarkdown } from 'notion-to-md'
 import { NotionToMarkdownClient } from './notion-to-markdown-client'
 import { NotionClient } from './notion-client'
 import { simpleGit, SimpleGit } from 'simple-git'
+import { getNotionApiKey, getNotionDatabaseId } from '../config/secret'
 
 let client: Client | null = null
 let notionToMarkdown: NotionToMarkdown | null = null
@@ -15,7 +15,7 @@ let gitClient: SimpleGit | null = null
 function getClient(): Client {
   if (client === null) {
     client = new Client({
-      auth: notionApiKey,
+      auth: getNotionApiKey(),
       logLevel: process.env.NOTION_TO_JEKYLL_DEBUG
         ? LogLevel.DEBUG
         : LogLevel.WARN
@@ -36,7 +36,7 @@ function getNotionToMarkdown(): NotionToMarkdown {
 
 export function getNotionClient(): NotionClient {
   if (notionClient === null) {
-    notionClient = new NotionClient(getClient(), notionDatabaseId)
+    notionClient = new NotionClient(getClient(), getNotionDatabaseId())
   }
   return notionClient
 }
