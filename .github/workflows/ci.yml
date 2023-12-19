@@ -2,12 +2,9 @@ name: Continuous Integration
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   ci:
@@ -39,18 +36,16 @@ jobs:
           git config --global user.name ${{ github.actor }}
           git config --global user.email ${{ github.actor }}@users.noreply.github.com
 
-      - name: Install Dependencies
-        id: npm-ci
-        run: npm ci
+      - name: npm run
+        id: npm-run
+        run: |
+          npm ci
+          npm run all
 
-      - name: Check Format
-        id: npm-format-check
-        run: npm run format:check
-
-      - name: Lint
-        id: npm-lint
-        run: npm run lint
-
-      - name: Test
-        id: npm-test
-        run: npm run test
+      - name: Commit dist
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: "dist"
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: "chore: Update dist"

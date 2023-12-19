@@ -12,11 +12,14 @@ jobs:
       - name: Test local action
         id: test-action
         uses: ./
+        with:
+          notion_api_key: ${{ secrets.NOTION_API_KEY }}
+          notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
 
       - name: Check if '__post' directory exists
         id: check-post-directory
         run: |
-          if [ -d "__post" ]; then
+          if [ -d "__posts" ]; then
             echo "Success: '__post' directory exists."
           else
             echo "Error: '__post' directory not found."

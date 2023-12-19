@@ -11,7 +11,7 @@ export async function saveMarkdown(
   const hyphenatedTitle = page.title.replace(/\s/g, '-')
 
   const filename = `${yymmdd}-${hyphenatedTitle}.md`
-  const filePath = path.join(BASE_POST_PATH, filename)
+  const filePath = path.join(__dirname, '../', BASE_POST_PATH, filename)
 
   const data = [generateMetadata(page), markdown].join('\n\n')
 
