@@ -4,8 +4,9 @@ import { saveMarkdown } from './system/file-manager'
 import { commit } from './system/git'
 import { BASE_POST_PATH } from './config/constant'
 import path from 'path'
+import * as fs from 'fs-extra'
 
-export async function run(): Promise<void> {
+export async function run(workspace: string): Promise<void> {
   const notionClient = getNotionClient()
   const notionToMarkdownClient = getNotionToMarkdownClient()
 
@@ -25,5 +26,9 @@ export async function run(): Promise<void> {
     console.log(`Synchronized ${updated.title} to ${updated.post_path}`)
   }
 
-  await commit(path.join(__dirname, '../', BASE_POST_PATH), 'Update post')
+  await fs.copy(
+    path.join(__dirname, '../', BASE_POST_PATH),
+    path.join(workspace, BASE_POST_PATH)
+  )
+  await commit(path.join(workspace, BASE_POST_PATH), 'Update post')
 }
