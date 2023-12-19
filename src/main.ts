@@ -1,7 +1,6 @@
 import { getNotionClient, getNotionToMarkdownClient } from './core/di-container'
 import { filterNotSynchronized } from './utils/filter'
 import { saveMarkdown } from './system/file-manager'
-import { commit } from './system/git'
 import { BASE_POST_PATH } from './config/constant'
 import path from 'path'
 import * as fs from 'fs-extra'
@@ -30,5 +29,4 @@ export async function run(workspace: string): Promise<void> {
     path.join(__dirname, '../', BASE_POST_PATH),
     path.join(workspace, BASE_POST_PATH)
   )
-  await commit(path.join(workspace, BASE_POST_PATH), 'Update post')
 }
