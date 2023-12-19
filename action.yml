@@ -13,14 +13,37 @@ inputs:
   notion_database_id:
     description: "Notion database ID"
     required: true
-  commit_author:
-    description: "Commit author"
+  github_workspace:
+    description: "Github workspace"
+    required: false
+    default: ${{ github.workspace }}
+  github_token:
+    description: "Github token"
+    required: true
+  post_dir:
+    description: "Post directory"
+    required: false
+    default: "_posts"
+  commit_username:
+    description: "Commit username"
     required: false
     default: ${{ github.actor }}
   commit_email:
     description: "Commit email"
     required: false
     default: ${{ github.actor }}@users.noreply.github.com
+  commit_author:
+    description: "Commit author"
+    required: false
+    default: ${{ github.actor }}
+  commit_message:
+    description: "Commit message"
+    required: false
+    default: "docs: Update posts"
+  repository:
+    description: "Repository"
+    required: false
+    default: ${{ github.repository }}
 
 runs:
   using: node20

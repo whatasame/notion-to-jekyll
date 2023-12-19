@@ -14,6 +14,9 @@ interface Options {
     apiKey: string
     databaseId: string
   }
+  github: {
+    workspace: string
+  }
 }
 
 export async function run(options: Options): Promise<void> {
