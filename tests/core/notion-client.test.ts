@@ -42,9 +42,7 @@ describe('Notion client', () => {
       '__posts/2023-12-17-same-sync-time.md'
     )
 
-    expect(
-      page.synchronized_time?.localeCompare(startTime)
-    ).toBeGreaterThanOrEqual(0)
+    expect(page.synchronized_time?.localeCompare(startTime)).toBeLessThan(0)
     expect(page.post_path).toEqual('__posts/2023-12-17-same-sync-time.md')
   })
 })
