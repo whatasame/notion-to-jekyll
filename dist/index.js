@@ -33712,7 +33712,8 @@ const node_child_process_1 = __nccwpck_require__(7718);
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const INPUTS = {
     NOTION_API_KEY: 'notion_api_key',
-    NOTION_DATABASE_ID: 'notion_database_id'
+    NOTION_DATABASE_ID: 'notion_database_id',
+    GITHUB_WORKSPACE: 'github_workspace'
 };
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -33723,10 +33724,16 @@ function start() {
             const notionDatabaseId = core.getInput(INPUTS.NOTION_DATABASE_ID, {
                 required: true
             });
+            const githubWorkspace = core.getInput(INPUTS.GITHUB_WORKSPACE, {
+                required: true
+            });
             const options = {
                 notion: {
                     apiKey: notionApiKey,
                     databaseId: notionDatabaseId
+                },
+                github: {
+                    workspace: githubWorkspace
                 }
             };
             yield (0, main_1.run)(options);
@@ -33822,7 +33829,7 @@ function run(options) {
         const pages = yield notionClient.getPages(); // TODO: If pages size is over 100 ?
         for (const page of filterNotSynchronized(pages)) {
             const markdown = yield notionToMarkdownClient.getMarkdownAsString(page.id);
-            const directory = path_1.default.join(__dirname, '../', BASE_POST_PATH);
+            const directory = path_1.default.join(options.github.workspace, BASE_POST_PATH);
             const result = yield (0, file_manager_1.saveMarkdownAsFile)(directory, page, markdown);
             const updatedPage = yield notionClient.updatePage(page.id, result.post_path);
             console.log(`👻 Synchronized "${updatedPage.title}" to "${updatedPage.post_path}"`);
@@ -33882,18 +33889,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.saveMarkdownAsFile = void 0;
 const fs = __importStar(__nccwpck_require__(5630));
-const node_path_1 = __importDefault(__nccwpck_require__(9411));
+const path_1 = __importDefault(__nccwpck_require__(1017));
 function saveMarkdownAsFile(directory, page, markdown) {
     return __awaiter(this, void 0, void 0, function* () {
         const yymmdd = page.last_edited_time.split('T')[0];
         const hyphenatedTitle = page.title.replace(/\s/g, '-');
         const filename = `${yymmdd}-${hyphenatedTitle}.md`;
-        const filePath = node_path_1.default.join(__dirname, '../', directory, filename);
+        const fullPath = path_1.default.join(directory, filename);
         const data = [generateMetadata(page), markdown].join('\n\n');
-        yield fs.outputFile(filePath, data, 'utf-8');
+        yield fs.outputFile(fullPath, data, 'utf-8');
         return {
             synchronized_time: new Date().toISOString(),
-            post_path: filePath
+            post_path: fullPath
         };
     });
 }
@@ -33960,25 +33967,34 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.toPage = void 0;
 const model_1 = __nccwpck_require__(4587);
 const helper_1 = __nccwpck_require__(4862);
-const propertyTypes = {
-    [model_1.PROPERTY_NAMES.TITLE]: helper_1.isTitleProperty,
-    [model_1.PROPERTY_NAMES.TAGS]: helper_1.isMultiSelectProperty,
-    [model_1.PROPERTY_NAMES.CATEGORIES]: helper_1.isMultiSelectProperty,
-    [model_1.PROPERTY_NAMES.SYNC_TIME]: helper_1.isDateProperty,
-    [model_1.PROPERTY_NAMES.POST_PATH]: helper_1.isRichTextProperty
-};
 function toPage(result) {
     var _a, _b, _c, _d;
-    const title = getProperty(result, model_1.PROPERTY_NAMES.TITLE);
-    const tags = getProperty(result, model_1.PROPERTY_NAMES.TAGS);
-    const categories = getProperty(result, model_1.PROPERTY_NAMES.CATEGORIES);
-    const synchronizedTime = getProperty(result, model_1.PROPERTY_NAMES.SYNC_TIME);
-    const postPath = getProperty(result, model_1.PROPERTY_NAMES.POST_PATH);
+    // TODO: extract
+    const title = result.properties[model_1.PROPERTY_NAMES.TITLE];
+    if (!(0, helper_1.isTitleProperty)(title)) {
+        throw new Error(`Property ${model_1.PROPERTY_NAMES.TITLE} is not a title property`);
+    }
+    const tags = result.properties[model_1.PROPERTY_NAMES.TAGS];
+    if (!(0, helper_1.isMultiSelectProperty)(tags)) {
+        throw new Error(`Property ${model_1.PROPERTY_NAMES.TAGS} is not a multi_select property`);
+    }
+    const categories = result.properties[model_1.PROPERTY_NAMES.CATEGORIES];
+    if (!(0, helper_1.isMultiSelectProperty)(categories)) {
+        throw new Error(`Property ${model_1.PROPERTY_NAMES.CATEGORIES} is not a multi_select property`);
+    }
+    const synchronizedTime = result.properties[model_1.PROPERTY_NAMES.SYNC_TIME];
+    if (!(0, helper_1.isDateProperty)(synchronizedTime)) {
+        throw new Error(`Property ${model_1.PROPERTY_NAMES.SYNC_TIME} is not a date property`);
+    }
+    const postPath = result.properties[model_1.PROPERTY_NAMES.POST_PATH];
+    if (!(0, helper_1.isRichTextProperty)(postPath)) {
+        throw new Error(`Property ${model_1.PROPERTY_NAMES.POST_PATH} is not a rich_text property`);
+    }
     return {
         id: result.id,
         title: title.title[0].plain_text,
-        categories: categories.multi_select.map((category) => category.name),
-        tags: tags.multi_select.map((tag) => tag.name),
+        categories: categories.multi_select.map(category => category.name),
+        tags: tags.multi_select.map(tag => tag.name),
         created_time: result.created_time,
         last_edited_time: result.last_edited_time,
         synchronized_time: (_b = (_a = synchronizedTime.date) === null || _a === void 0 ? void 0 : _a.start) !== null && _b !== void 0 ? _b : null,
@@ -33986,15 +34002,6 @@ function toPage(result) {
     };
 }
 exports.toPage = toPage;
-function getProperty(result, propertyName) {
-    const property = result.properties[propertyName];
-    const typeCheck = propertyTypes[propertyName];
-    (typeCheck === null || typeCheck === void 0 ? void 0 : typeCheck(property)) ||
-        (() => {
-            throw new Error(`Property ${propertyName} is not of the expected type`);
-        })();
-    return property;
-}
 
 
 /***/ }),
@@ -34124,14 +34131,6 @@ module.exports = require("node:child_process");
 
 "use strict";
 module.exports = require("node:events");
-
-/***/ }),
-
-/***/ 9411:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("node:path");
 
 /***/ }),
 
