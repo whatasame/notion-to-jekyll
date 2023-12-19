@@ -1,5 +1,5 @@
 import { Client, isFullDatabase, isFullPage } from '@notionhq/client'
-import { Pages } from './model'
+import { Page, Pages } from './model'
 import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from '../config/constant'
 import { validateProperty } from '../utils/helper'
 import { toPage } from '../utils/mapper'
@@ -39,5 +39,34 @@ export class NotionClient {
       has_more: response.has_more,
       next_cursor: response.next_cursor
     }
+  }
+
+  async updatePage(pageId: string, postPath: string): Promise<Page> {
+    const response = await this.#client.pages.update({
+      page_id: pageId,
+      properties: {
+        [POST_PATH_NAME]: {
+          rich_text: [
+            {
+              type: 'text',
+              text: {
+                content: postPath
+              }
+            }
+          ]
+        },
+        [SYNC_TIME_NAME]: {
+          date: {
+            start: new Date().toISOString()
+          }
+        }
+      }
+    })
+
+    if (!isFullPage(response)) {
+      throw new Error('Not a page')
+    }
+
+    return toPage(response)
   }
 }

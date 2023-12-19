@@ -33,4 +33,18 @@ describe('Notion client', () => {
     expect(pages.has_more).toBeDefined()
     expect(pages.next_cursor).toBeDefined()
   })
+
+  it('should be able to update page properties', async () => {
+    const startTime = new Date().toISOString()
+
+    const page = await notionClient.updatePage(
+      process.env.NOTION_TO_JEKYLL_PAGE_ID as string,
+      '__posts/2023-12-17-same-sync-time.md'
+    )
+
+    expect(
+      page.synchronized_time?.localeCompare(startTime)
+    ).toBeGreaterThanOrEqual(0)
+    expect(page.post_path).toEqual('__posts/2023-12-17-same-sync-time.md')
+  })
 })

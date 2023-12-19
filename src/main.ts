@@ -10,14 +10,16 @@ export async function run(): Promise<void> {
   const notionToMarkdownClient = getNotionToMarkdownClient()
 
   await notionClient.validateDatabaseProperties()
-  const pages = await notionClient.getPages()
+  const pages = await notionClient.getPages() // TODO: If pages size is over 100 ?
   const targetPages = filterNotSynchronized(pages)
 
   for (const page of targetPages) {
     const markdown = await notionToMarkdownClient.getMarkdownFromPage(page.id)
 
-    // TODO: Update Notion page property
-    await saveMarkdown(page, markdown)
+    const saved = await saveMarkdown(page, markdown)
+    const updated = await notionClient.updatePage(page.id, saved.post_path!)
+
+    console.log(`Synchronized ${updated.title} to ${updated.post_path}`)
   }
 
   await commit(path.join(__dirname, '../', BASE_POST_PATH), 'Update post')
