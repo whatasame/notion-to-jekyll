@@ -39432,7 +39432,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const secret_1 = __nccwpck_require__(6083);
 const main_1 = __nccwpck_require__(399);
 (0, secret_1.initialize)(core.getInput('notion_api_key'), core.getInput('notion_database_id'), core.getInput('commit_email'), core.getInput('commit_author'));
-(0, main_1.run)();
+(0, main_1.run)(core.getInput('github.workspace'));
 
 
 /***/ }),
@@ -39442,6 +39442,29 @@ const main_1 = __nccwpck_require__(399);
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39462,7 +39485,8 @@ const file_manager_1 = __nccwpck_require__(4919);
 const git_1 = __nccwpck_require__(4298);
 const constant_1 = __nccwpck_require__(7156);
 const path_1 = __importDefault(__nccwpck_require__(1017));
-function run() {
+const fs = __importStar(__nccwpck_require__(5630));
+function run(workspace) {
     return __awaiter(this, void 0, void 0, function* () {
         const notionClient = (0, di_container_1.getNotionClient)();
         const notionToMarkdownClient = (0, di_container_1.getNotionToMarkdownClient)();
@@ -39475,7 +39499,8 @@ function run() {
             const updated = yield notionClient.updatePage(page.id, saved.post_path);
             console.log(`Synchronized ${updated.title} to ${updated.post_path}`);
         }
-        yield (0, git_1.commit)(path_1.default.join(__dirname, '../', constant_1.BASE_POST_PATH), 'Update post');
+        yield fs.copy(path_1.default.join(__dirname, '../', constant_1.BASE_POST_PATH), path_1.default.join(workspace, constant_1.BASE_POST_PATH));
+        yield (0, git_1.commit)(path_1.default.join(workspace, constant_1.BASE_POST_PATH), 'Update post');
     });
 }
 exports.run = run;
