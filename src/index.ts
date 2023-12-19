@@ -5,7 +5,8 @@ import path from 'path'
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
-  NOTION_DATABASE_ID: 'notion_database_id'
+  NOTION_DATABASE_ID: 'notion_database_id',
+  GITHUB_WORKSPACE: 'github_workspace'
 }
 
 async function start(): Promise<void> {
@@ -16,10 +17,16 @@ async function start(): Promise<void> {
     const notionDatabaseId = core.getInput(INPUTS.NOTION_DATABASE_ID, {
       required: true
     })
+    const githubWorkspace = core.getInput(INPUTS.GITHUB_WORKSPACE, {
+      required: true
+    })
     const options = {
       notion: {
         apiKey: notionApiKey,
         databaseId: notionDatabaseId
+      },
+      github: {
+        workspace: githubWorkspace
       }
     }
 

@@ -14,6 +14,9 @@ interface Options {
     apiKey: string
     databaseId: string
   }
+  github: {
+    workspace: string
+  }
 }
 
 export async function run(options: Options): Promise<void> {
@@ -33,7 +36,7 @@ export async function run(options: Options): Promise<void> {
   for (const page of filterNotSynchronized(pages)) {
     const markdown = await notionToMarkdownClient.getMarkdownAsString(page.id)
 
-    const directory = path.join(__dirname, '../', BASE_POST_PATH)
+    const directory = path.join(options.github.workspace, BASE_POST_PATH)
     const result = await saveMarkdownAsFile(directory, page, markdown)
     const updatedPage = await notionClient.updatePage(page.id, result.post_path)
     console.log(
