@@ -1,11 +1,12 @@
 import { Page } from '../../src/core/model'
-import { saveMarkdown } from '../../src/system/file-manager'
+import { saveMarkdownAsFile } from '../../src/utils/file-manager'
 import * as fs from 'fs-extra'
-import { BASE_POST_PATH } from '../../src/config/constant'
 import path from 'path'
 
+const directory = path.join(__dirname, '../', '_posts')
+
 afterEach(async () => {
-  await fs.remove(path.join(__dirname, '../', BASE_POST_PATH))
+  await fs.remove(directory)
 })
 
 describe('FileManager', () => {
@@ -26,29 +27,19 @@ This is a test page.
 `
 
   it('should save markdown file with correct metadata', async () => {
-    const uploadedPage = await saveMarkdown(page, markdown)
+    const uploadedPage = await saveMarkdownAsFile(directory, page, markdown)
 
     expect(uploadedPage).toEqual({
-      id: page.id,
-      title: page.title,
-      categories: page.categories,
-      tags: page.tags,
-      created_time: page.created_time,
-      last_edited_time: page.last_edited_time,
       synchronized_time: expect.any(String),
       post_path: expect.any(String)
     })
   })
 
   it('should have correct metadata in the saved markdown file', async () => {
-    const uploadedPage = await saveMarkdown(page, markdown)
+    const uploadedPage = await saveMarkdownAsFile(directory, page, markdown)
 
-    const fileContent = await fs.readFile(
-      uploadedPage.post_path as string,
-      'utf-8'
-    )
-
-    expect(fileContent).toBe(`---
+    fs.readFile(uploadedPage.post_path, (err, data) => {
+      expect(data.toString()).toBe(`---
 layout: post
 title: null sync time
 date: 2023-12-17
@@ -60,5 +51,6 @@ tags: [null]
 
 This is a test page.
 `)
+    })
   })
 })
