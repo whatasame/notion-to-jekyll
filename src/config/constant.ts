@@ -1,7 +1,7 @@
-export const TITLE_NAME = '[notion-to-jekyll] title'
-export const CATEGORIES_NAME = '[notion-to-jekyll] categories'
-export const TAGS_NAME = '[notion-to-jekyll] tags'
-export const SYNC_TIME_NAME = '[notion-to-jekyll] sync time'
-export const POST_PATH_NAME = '[notion-to-jekyll] post path'
-
-export const BASE_POST_PATH = '__posts'
+export const PROPERTY_NAMES = {
+  TITLE: '[notion-to-jekyll] title',
+  CATEGORIES: '[notion-to-jekyll] categories',
+  TAGS: '[notion-to-jekyll] tags',
+  SYNC_TIME: '[notion-to-jekyll] sync time',
+  POST_PATH: '[notion-to-jekyll] post path'
+}

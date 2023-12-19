@@ -7,7 +7,7 @@ export class NotionToMarkdownClient {
     this.#client = notionToMarkdown
   }
 
-  async getMarkdownFromPage(pageId: string): Promise<string> {
+  async getMarkdownAsString(pageId: string): Promise<string> {
     const mdBlocks = await this.#client.pageToMarkdown(pageId)
 
     return this.#client.toMarkdownString(mdBlocks)['parent']

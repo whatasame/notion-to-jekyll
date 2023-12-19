@@ -1,32 +1,51 @@
-import { getNotionClient, getNotionToMarkdownClient } from './core/di-container'
-import { filterNotSynchronized } from './utils/filter'
-import { saveMarkdown } from './system/file-manager'
-import { BASE_POST_PATH } from './config/constant'
+import { saveMarkdownAsFile } from './system/file-manager'
 import path from 'path'
-import * as fs from 'fs-extra'
+import { Client, LogLevel } from '@notionhq/client'
+import { NotionToMarkdown } from 'notion-to-md'
+import { NotionClient } from './core/notion-client'
+import * as core from '@actions/core'
+import { NotionToMarkdownClient } from './core/notion-to-markdown-client'
+import { Page, Pages } from './core/model'
 
-export async function run(workspace: string): Promise<void> {
-  const notionClient = getNotionClient()
-  const notionToMarkdownClient = getNotionToMarkdownClient()
+const BASE_POST_PATH = '_posts'
+
+interface Options {
+  notion: {
+    apiKey: string
+    databaseId: string
+  }
+}
+
+export async function run(options: Options): Promise<void> {
+  const notion = new Client({
+    auth: options.notion.apiKey,
+    logLevel: core.isDebug() ? LogLevel.DEBUG : LogLevel.WARN
+  })
+  const notionToMarkdown = new NotionToMarkdown({
+    notionClient: notion,
+    config: { separateChildPage: true }
+  })
+  const notionClient = new NotionClient(notion, options.notion.databaseId)
+  const notionToMarkdownClient = new NotionToMarkdownClient(notionToMarkdown)
 
   await notionClient.validateDatabaseProperties()
   const pages = await notionClient.getPages() // TODO: If pages size is over 100 ?
-  const targetPages = filterNotSynchronized(pages)
+  for (const page of filterNotSynchronized(pages)) {
+    const markdown = await notionToMarkdownClient.getMarkdownAsString(page.id)
 
-  for (const page of targetPages) {
-    const markdown = await notionToMarkdownClient.getMarkdownFromPage(page.id)
-
-    const saved = await saveMarkdown(page, markdown)
-    const updated = await notionClient.updatePage(
-      page.id,
-      saved.post_path as string
+    const directory = path.join(__dirname, '../', BASE_POST_PATH)
+    const result = await saveMarkdownAsFile(directory, page, markdown)
+    const updatedPage = await notionClient.updatePage(page.id, result.post_path)
+    console.log(
+      `👻 Synchronized "${updatedPage.title}" to "${updatedPage.post_path}"`
     )
-
-    console.log(`Synchronized ${updated.title} to ${updated.post_path}`)
   }
+}
 
-  await fs.copy(
-    path.join(__dirname, '../', BASE_POST_PATH),
-    path.join(workspace, BASE_POST_PATH)
+export function filterNotSynchronized(pages: Pages): Page[] {
+  return pages.contents.filter(
+    page =>
+      page.synchronized_time === null ||
+      new Date(page.synchronized_time) < new Date(page.last_edited_time)
   )
 }

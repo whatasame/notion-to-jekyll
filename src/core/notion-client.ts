@@ -1,8 +1,8 @@
 import { Client, isFullDatabase, isFullPage } from '@notionhq/client'
 import { Page, Pages } from './model'
-import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from '../config/constant'
 import { validateProperty } from '../utils/helper'
 import { toPage } from '../utils/mapper'
+import { PROPERTY_NAMES } from '../config/constant'
 
 export class NotionClient {
   readonly #client: Client
@@ -22,9 +22,9 @@ export class NotionClient {
       throw new Error('Not a database')
     }
 
-    validateProperty(database.properties, TAGS_NAME, 'multi_select')
-    validateProperty(database.properties, SYNC_TIME_NAME, 'date')
-    validateProperty(database.properties, POST_PATH_NAME, 'rich_text')
+    validateProperty(database.properties, PROPERTY_NAMES.TAGS, 'multi_select')
+    validateProperty(database.properties, PROPERTY_NAMES.SYNC_TIME, 'date')
+    validateProperty(database.properties, PROPERTY_NAMES.POST_PATH, 'rich_text')
   }
 
   async getPages(page_size = 100, cursor?: string): Promise<Pages> {
@@ -45,7 +45,7 @@ export class NotionClient {
     const response = await this.#client.pages.update({
       page_id: pageId,
       properties: {
-        [POST_PATH_NAME]: {
+        [PROPERTY_NAMES.POST_PATH]: {
           rich_text: [
             {
               type: 'text',
@@ -55,7 +55,7 @@ export class NotionClient {
             }
           ]
         },
-        [SYNC_TIME_NAME]: {
+        [PROPERTY_NAMES.SYNC_TIME]: {
           date: {
             start: new Date().toISOString()
           }

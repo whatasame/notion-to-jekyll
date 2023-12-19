@@ -1,46 +1,46 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
 import { Page } from '../core/model'
 import {
-  CATEGORIES_NAME,
-  POST_PATH_NAME,
-  SYNC_TIME_NAME,
-  TAGS_NAME,
-  TITLE_NAME
-} from '../config/constant'
-import {
   isDateProperty,
   isMultiSelectProperty,
   isRichTextProperty,
   isTitleProperty
 } from './helper'
+import { PROPERTY_NAMES } from '../config/constant'
 
 export function toPage(result: PageObjectResponse): Page {
   // TODO: extract
-  const title = result.properties[TITLE_NAME]
+  const title = result.properties[PROPERTY_NAMES.TITLE]
   if (!isTitleProperty(title)) {
-    throw new Error(`Property ${TITLE_NAME} is not a title property`)
+    throw new Error(`Property ${PROPERTY_NAMES.TITLE} is not a title property`)
   }
 
-  const tags = result.properties[TAGS_NAME]
+  const tags = result.properties[PROPERTY_NAMES.TAGS]
   if (!isMultiSelectProperty(tags)) {
-    throw new Error(`Property ${TAGS_NAME} is not a multi_select property`)
-  }
-
-  const categories = result.properties[CATEGORIES_NAME]
-  if (!isMultiSelectProperty(categories)) {
     throw new Error(
-      `Property ${CATEGORIES_NAME} is not a multi_select property`
+      `Property ${PROPERTY_NAMES.TAGS} is not a multi_select property`
     )
   }
 
-  const synchronizedTime = result.properties[SYNC_TIME_NAME]
-  if (!isDateProperty(synchronizedTime)) {
-    throw new Error(`Property ${SYNC_TIME_NAME} is not a date property`)
+  const categories = result.properties[PROPERTY_NAMES.CATEGORIES]
+  if (!isMultiSelectProperty(categories)) {
+    throw new Error(
+      `Property ${PROPERTY_NAMES.CATEGORIES} is not a multi_select property`
+    )
   }
 
-  const postPath = result.properties[POST_PATH_NAME]
+  const synchronizedTime = result.properties[PROPERTY_NAMES.SYNC_TIME]
+  if (!isDateProperty(synchronizedTime)) {
+    throw new Error(
+      `Property ${PROPERTY_NAMES.SYNC_TIME} is not a date property`
+    )
+  }
+
+  const postPath = result.properties[PROPERTY_NAMES.POST_PATH]
   if (!isRichTextProperty(postPath)) {
-    throw new Error(`Property ${POST_PATH_NAME} is not a rich_text property`)
+    throw new Error(
+      `Property ${PROPERTY_NAMES.POST_PATH} is not a rich_text property`
+    )
   }
 
   return {

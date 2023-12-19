@@ -1,29 +1,28 @@
 import { Page } from '../core/model'
 import * as fs from 'fs-extra'
 import path from 'node:path'
-import { BASE_POST_PATH } from '../config/constant'
 
-export async function saveMarkdown(
+type SaveResult = {
+  synchronized_time: string
+  post_path: string
+}
+
+export async function saveMarkdownAsFile(
+  directory: string,
   page: Page,
   markdown: string
-): Promise<Page> {
+): Promise<SaveResult> {
   const yymmdd = page.last_edited_time.split('T')[0]
   const hyphenatedTitle = page.title.replace(/\s/g, '-')
 
   const filename = `${yymmdd}-${hyphenatedTitle}.md`
-  const filePath = path.join(__dirname, '../', BASE_POST_PATH, filename)
+  const filePath = path.join(__dirname, '../', directory, filename)
 
   const data = [generateMetadata(page), markdown].join('\n\n')
 
   await fs.outputFile(filePath, data, 'utf-8')
 
   return {
-    title: page.title,
-    id: page.id,
-    categories: page.categories,
-    tags: page.tags,
-    created_time: page.created_time,
-    last_edited_time: page.last_edited_time,
     synchronized_time: new Date().toISOString(),
     post_path: filePath
   }
