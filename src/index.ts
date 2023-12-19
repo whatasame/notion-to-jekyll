@@ -9,4 +9,4 @@ initialize(
   core.getInput('commit_author')
 )
 
-run()
+run(core.getInput('github.workspace'))
