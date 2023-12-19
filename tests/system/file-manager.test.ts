@@ -1,7 +1,7 @@
 import { Page } from '../../src/core/model'
-import { saveMarkdown } from '../../src/core/file-manager'
+import { saveMarkdown } from '../../src/system/file-manager'
 import * as fs from 'fs-extra'
-import { BASE_POST_PATH } from '../../src/core/constant'
+import { BASE_POST_PATH } from '../../src/config/constant'
 
 afterEach(async () => {
   await fs.remove(BASE_POST_PATH)

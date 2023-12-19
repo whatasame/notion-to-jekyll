@@ -1,8 +1,8 @@
 import { Client, isFullDatabase, isFullPage } from '@notionhq/client'
 import { Pages } from './model'
-import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from './constant'
-import { validateProperty } from './helper'
-import { toPage } from './mapper'
+import { POST_PATH_NAME, SYNC_TIME_NAME, TAGS_NAME } from '../config/constant'
+import { validateProperty } from '../utils/helper'
+import { toPage } from '../utils/mapper'
 
 export class NotionClient {
   readonly #client: Client

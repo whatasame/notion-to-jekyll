@@ -1,4 +1,4 @@
-import { Page, Pages } from './model'
+import { Page, Pages } from '../core/model'
 
 export function filterNotSynchronized(pages: Pages): Page[] {
   return pages.contents.filter(

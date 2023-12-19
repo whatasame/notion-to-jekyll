@@ -1,6 +1,12 @@
 import { getNotionToMarkdownClient } from '../../src/core/di-container'
+import {
+  initializeNotionApiKey,
+  initializeNotionDatabaseId
+} from '../../src/config/secret'
 
 describe('NotionToMarkdownClient', () => {
+  initializeNotionApiKey(process.env.NOTION_TO_JEKYLL_API_KEY!)
+  initializeNotionDatabaseId(process.env.NOTION_TO_JEKYLL_DATABASE_ID!)
   const notionToMarkdownClient = getNotionToMarkdownClient()
 
   const pageId = process.env.NOTION_TO_JEKYLL_PAGE_ID

@@ -1,12 +1,12 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints'
-import { Page } from './model'
+import { Page } from '../core/model'
 import {
   CATEGORIES_NAME,
   POST_PATH_NAME,
   SYNC_TIME_NAME,
   TAGS_NAME,
   TITLE_NAME
-} from './constant'
+} from '../config/constant'
 import {
   isDateProperty,
   isMultiSelectProperty,
