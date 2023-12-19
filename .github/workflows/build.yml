@@ -1,0 +1,29 @@
+name: Build artifacts
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-artifact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+
+      - run: npm ci
+      - run: npm run package
+
+      - uses: EndBug/add-and-commit@v7
+        with:
+          add: "dist"
+          author_name: github-actions[bot]
+          author_email: github-actions[bot]@users.noreply.github.com
+          message: "chore: Update dist"
