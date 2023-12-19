@@ -1,6 +1,6 @@
 import { Page } from '../core/model'
 import * as fs from 'fs-extra'
-import path from 'node:path'
+import path from 'path'
 
 type SaveResult = {
   synchronized_time: string
@@ -14,17 +14,16 @@ export async function saveMarkdownAsFile(
 ): Promise<SaveResult> {
   const yymmdd = page.last_edited_time.split('T')[0]
   const hyphenatedTitle = page.title.replace(/\s/g, '-')
-
   const filename = `${yymmdd}-${hyphenatedTitle}.md`
-  const filePath = path.join(__dirname, '../', directory, filename)
 
+  const fullPath = path.join(directory, filename)
   const data = [generateMetadata(page), markdown].join('\n\n')
 
-  await fs.outputFile(filePath, data, 'utf-8')
+  await fs.outputFile(fullPath, data, 'utf-8')
 
   return {
     synchronized_time: new Date().toISOString(),
-    post_path: filePath
+    post_path: fullPath
   }
 }
 
