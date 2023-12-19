@@ -5,16 +5,13 @@ import {
 } from '../../src/config/secret'
 
 describe('NotionToMarkdownClient', () => {
-  initializeNotionApiKey(process.env.NOTION_TO_JEKYLL_API_KEY!)
-  initializeNotionDatabaseId(process.env.NOTION_TO_JEKYLL_DATABASE_ID!)
+  // TODO: Not use as string?
+  initializeNotionApiKey(process.env.NOTION_TO_JEKYLL_API_KEY as string)
+  initializeNotionDatabaseId(process.env.NOTION_TO_JEKYLL_DATABASE_ID as string)
+
   const notionToMarkdownClient = getNotionToMarkdownClient()
 
-  const pageId = process.env.NOTION_TO_JEKYLL_PAGE_ID
-  if (!pageId) {
-    throw new Error(
-      `Missing environment variable for test. Required: "NOTION_TO_JEKYLL_PAGE_ID"`
-    )
-  }
+  const pageId = process.env.NOTION_TO_JEKYLL_PAGE_ID as string
 
   it('should get markdown by page id', async () => {
     const markdown = await notionToMarkdownClient.getMarkdownFromPage(pageId)

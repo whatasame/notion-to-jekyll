@@ -5,8 +5,9 @@ import {
 } from '../../src/config/secret'
 
 describe('Notion client', () => {
-  initializeNotionApiKey(process.env.NOTION_TO_JEKYLL_API_KEY!)
-  initializeNotionDatabaseId(process.env.NOTION_TO_JEKYLL_DATABASE_ID!)
+  // TODO: Not use as string?
+  initializeNotionApiKey(process.env.NOTION_TO_JEKYLL_API_KEY as string)
+  initializeNotionDatabaseId(process.env.NOTION_TO_JEKYLL_DATABASE_ID as string)
   const notionClient = getNotionClient()
 
   it('should be able to validate database has correct properties', async () => {
