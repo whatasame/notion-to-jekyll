@@ -3,6 +3,7 @@ import { filterNotSynchronized } from './utils/filter'
 import { saveMarkdown } from './system/file-manager'
 import { commit } from './system/git'
 import { BASE_POST_PATH } from './config/constant'
+import path from 'path'
 
 export async function run(): Promise<void> {
   const notionClient = getNotionClient()
@@ -19,5 +20,5 @@ export async function run(): Promise<void> {
     await saveMarkdown(page, markdown)
   }
 
-  await commit(BASE_POST_PATH, 'Update post')
+  await commit(path.join(__dirname, '../', BASE_POST_PATH), 'Update post')
 }

@@ -2,9 +2,10 @@ import { Page } from '../../src/core/model'
 import { saveMarkdown } from '../../src/system/file-manager'
 import * as fs from 'fs-extra'
 import { BASE_POST_PATH } from '../../src/config/constant'
+import path from 'path'
 
 afterEach(async () => {
-  await fs.remove(BASE_POST_PATH)
+  await fs.remove(path.join(__dirname, '../', BASE_POST_PATH))
 })
 
 describe('FileManager', () => {
