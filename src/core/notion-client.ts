@@ -1,8 +1,7 @@
 import { Client, isFullDatabase, isFullPage } from '@notionhq/client'
-import { Page, Pages } from './model'
+import { Page, Pages, PROPERTY_NAMES } from './model'
 import { validateProperty } from '../utils/helper'
 import { toPage } from '../utils/mapper'
-import { PROPERTY_NAMES } from '../config/constant'
 
 export class NotionClient {
   readonly #client: Client
@@ -13,7 +12,6 @@ export class NotionClient {
     this.#databaseId = databaseId
   }
 
-  // TODO: Run immediately after instantiation
   async validateDatabaseProperties(): Promise<void> {
     const database = await this.#client.databases.retrieve({
       database_id: this.#databaseId

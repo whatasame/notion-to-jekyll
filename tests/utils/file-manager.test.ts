@@ -1,5 +1,5 @@
 import { Page } from '../../src/core/model'
-import { saveMarkdownAsFile } from '../../src/system/file-manager'
+import { saveMarkdownAsFile } from '../../src/utils/file-manager'
 import * as fs from 'fs-extra'
 import path from 'path'
 

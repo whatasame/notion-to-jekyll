@@ -1,4 +1,4 @@
-import { saveMarkdownAsFile } from './system/file-manager'
+import { saveMarkdownAsFile } from './utils/file-manager'
 import path from 'path'
 import { Client, LogLevel } from '@notionhq/client'
 import { NotionToMarkdown } from 'notion-to-md'
