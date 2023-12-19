@@ -27,14 +27,11 @@ jobs:
         with:
           cache: npm
 
-      - id: test-env-injection
+      - name: Environment variables injection for local testing
         run: |
           echo "NOTION_TO_JEKYLL_API_KEY=${{ secrets.NOTION_TO_JEKYLL_API_KEY }}" >> $GITHUB_ENV
           echo "NOTION_TO_JEKYLL_DATABASE_ID=${{ secrets.NOTION_TO_JEKYLL_DATABASE_ID }}" >> $GITHUB_ENV
           echo "NOTION_TO_JEKYLL_PAGE_ID=${{ secrets.NOTION_TO_JEKYLL_PAGE_ID }}" >> $GITHUB_ENV
-
-      - id: git-config
-        run: |
           git config --global user.name ${{ github.actor }}
           git config --global user.email ${{ github.actor }}@users.noreply.github.com
 
