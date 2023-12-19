@@ -25,13 +25,3 @@ jobs:
             echo "Error: '__post' directory not found."
             exit 1
           fi
-
-      - name: Check if '__post' directory exists
-        id: check-post-directory
-        run: |
-          if [ -d "__post" ]; then
-            echo "Success: '__post' directory exists."
-          else
-            echo "Error: '__post' directory not found."
-            exit 1
-          fi
