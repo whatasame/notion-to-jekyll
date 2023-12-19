@@ -17,7 +17,10 @@ export async function run(): Promise<void> {
     const markdown = await notionToMarkdownClient.getMarkdownFromPage(page.id)
 
     const saved = await saveMarkdown(page, markdown)
-    const updated = await notionClient.updatePage(page.id, saved.post_path!)
+    const updated = await notionClient.updatePage(
+      page.id,
+      saved.post_path as string
+    )
 
     console.log(`Synchronized ${updated.title} to ${updated.post_path}`)
   }
