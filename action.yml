@@ -6,6 +6,22 @@ branding:
   icon: "heart"
   color: "red"
 
+inputs:
+  notion_api_key:
+    description: "Notion API key"
+    required: true
+  notion_database_id:
+    description: "Notion database ID"
+    required: true
+  commit_author:
+    description: "Commit author"
+    required: false
+    default: ${{ github.actor }}
+  commit_email:
+    description: "Commit email"
+    required: false
+    default: ${{ github.actor }}@users.noreply.github.com
+
 runs:
   using: node20
   main: dist/index.js
