@@ -39318,6 +39318,34 @@ class NotionClient {
             };
         });
     }
+    updatePage(pageId, postPath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield __classPrivateFieldGet(this, _NotionClient_client, "f").pages.update({
+                page_id: pageId,
+                properties: {
+                    [constant_1.POST_PATH_NAME]: {
+                        rich_text: [
+                            {
+                                type: 'text',
+                                text: {
+                                    content: postPath
+                                }
+                            }
+                        ]
+                    },
+                    [constant_1.SYNC_TIME_NAME]: {
+                        date: {
+                            start: new Date().toISOString()
+                        }
+                    }
+                }
+            });
+            if (!(0, client_1.isFullPage)(response)) {
+                throw new Error('Not a page');
+            }
+            return (0, mapper_1.toPage)(response);
+        });
+    }
 }
 exports.NotionClient = NotionClient;
 _NotionClient_client = new WeakMap(), _NotionClient_databaseId = new WeakMap();
@@ -39439,12 +39467,13 @@ function run() {
         const notionClient = (0, di_container_1.getNotionClient)();
         const notionToMarkdownClient = (0, di_container_1.getNotionToMarkdownClient)();
         yield notionClient.validateDatabaseProperties();
-        const pages = yield notionClient.getPages();
+        const pages = yield notionClient.getPages(); // TODO: If pages size is over 100 ?
         const targetPages = (0, filter_1.filterNotSynchronized)(pages);
         for (const page of targetPages) {
             const markdown = yield notionToMarkdownClient.getMarkdownFromPage(page.id);
-            // TODO: Update Notion page property
-            yield (0, file_manager_1.saveMarkdown)(page, markdown);
+            const saved = yield (0, file_manager_1.saveMarkdown)(page, markdown);
+            const updated = yield notionClient.updatePage(page.id, saved.post_path);
+            console.log(`Synchronized ${updated.title} to ${updated.post_path}`);
         }
         yield (0, git_1.commit)(path_1.default.join(__dirname, '../', constant_1.BASE_POST_PATH), 'Update post');
     });
