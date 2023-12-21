@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import { run } from './main'
 import { spawn } from 'node:child_process'
 import path from 'path'
+import * as fs from 'fs'
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
@@ -9,37 +10,42 @@ const INPUTS = {
   GITHUB_WORKSPACE: 'github_workspace'
 }
 
-async function start(): Promise<void> {
-  try {
-    const notionApiKey = core.getInput(INPUTS.NOTION_API_KEY, {
-      required: true
-    })
-    const notionDatabaseId = core.getInput(INPUTS.NOTION_DATABASE_ID, {
-      required: true
-    })
-    const githubWorkspace = core.getInput(INPUTS.GITHUB_WORKSPACE, {
-      required: true
-    })
-    const options = {
-      notion: {
-        apiKey: notionApiKey,
-        databaseId: notionDatabaseId
-      },
-      github: {
-        workspace: githubWorkspace
-      }
-    }
+export async function start(): Promise<void> {
+  const options = importOptions()
+  validatePostDirectory(options.github.workspace)
 
-    await run(options)
-  } catch (e) {
-    core.setFailed(`${e instanceof Error ? e.message : e}`)
-  }
+  await run(options)
 
   await exec('bash', [path.join(__dirname, '../script/run.sh')], {
     env: {
       ...process.env
     }
   })
+}
+
+function importOptions() {
+  return {
+    notion: {
+      apiKey: core.getInput(INPUTS.NOTION_API_KEY, {
+        required: true
+      }),
+      databaseId: core.getInput(INPUTS.NOTION_DATABASE_ID, {
+        required: true
+      })
+    },
+    github: {
+      workspace: core.getInput(INPUTS.GITHUB_WORKSPACE, {
+        required: true
+      })
+    }
+  }
+}
+
+function validatePostDirectory(workspace: string) {
+  const postDirectory = path.join(workspace, '_posts')
+  if (!fs.existsSync(postDirectory)) {
+    throw new Error(`⛔️ Post directory "${postDirectory}" does not exist.`)
+  }
 }
 
 const exec = async (
@@ -60,6 +66,13 @@ const exec = async (
       .on('error', reject)
   )
 }
+
+// ------- Bootstrap -------
+
 ;(async () => {
-  await start()
+  try {
+    await start()
+  } catch (e) {
+    core.setFailed(`${e instanceof Error ? e.message : e}`)
+  }
 })()
