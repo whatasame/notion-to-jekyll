@@ -1857,7 +1857,7 @@ const errors_1 = __nccwpck_require__(8259);
 const utils_1 = __nccwpck_require__(8769);
 const api_endpoints_1 = __nccwpck_require__(1605);
 const node_fetch_1 = __nccwpck_require__(467);
-const package_json_1 = __nccwpck_require__(8977);
+const package_json_1 = __nccwpck_require__(3797);
 class Client {
     constructor(options) {
         var _a, _b, _c, _d, _e, _f;
@@ -3431,7 +3431,7 @@ module.exports = {
 
 
 const { createFile, createFileSync } = __nccwpck_require__(2164)
-const { createLink, createLinkSync } = __nccwpck_require__(3797)
+const { createLink, createLinkSync } = __nccwpck_require__(4826)
 const { createSymlink, createSymlinkSync } = __nccwpck_require__(2549)
 
 module.exports = {
@@ -3455,7 +3455,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 3797:
+/***/ 4826:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -33500,29 +33500,34 @@ module.exports.implForWrapper = function (wrapper) {
 
 /***/ }),
 
-/***/ 4587:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PROPERTY_NAMES = void 0;
-exports.PROPERTY_NAMES = {
-    TITLE: '[notion-to-jekyll] title',
-    CATEGORIES: '[notion-to-jekyll] categories',
-    TAGS: '[notion-to-jekyll] tags',
-    SYNC_TIME: '[notion-to-jekyll] sync time',
-    POST_PATH: '[notion-to-jekyll] post path'
-};
-
-
-/***/ }),
-
-/***/ 314:
+/***/ 2344:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -33543,24 +33548,46 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _NotionClient_client, _NotionClient_databaseId;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+var _NotionToJekyllClient_notionClient, _NotionToJekyllClient_n2mClient, _NotionToJekyllClient_databaseId, _NotionToJekyllClient_githubWorkspace, _NotionToJekyllClient_postDir;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotionClient = void 0;
+exports.NotionToJekyllClient = void 0;
 const client_1 = __nccwpck_require__(324);
 const model_1 = __nccwpck_require__(4587);
 const helper_1 = __nccwpck_require__(4862);
 const mapper_1 = __nccwpck_require__(3082);
-class NotionClient {
-    constructor(client, databaseId) {
-        _NotionClient_client.set(this, void 0);
-        _NotionClient_databaseId.set(this, void 0);
-        __classPrivateFieldSet(this, _NotionClient_client, client, "f");
-        __classPrivateFieldSet(this, _NotionClient_databaseId, databaseId, "f");
+const notion_to_md_1 = __nccwpck_require__(4377);
+const core = __importStar(__nccwpck_require__(2186));
+const path_1 = __importDefault(__nccwpck_require__(1017));
+const file_manager_1 = __nccwpck_require__(1277);
+const filter_1 = __nccwpck_require__(2284);
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+class NotionToJekyllClient {
+    constructor(options) {
+        _NotionToJekyllClient_notionClient.set(this, void 0);
+        _NotionToJekyllClient_n2mClient.set(this, void 0);
+        _NotionToJekyllClient_databaseId.set(this, void 0);
+        _NotionToJekyllClient_githubWorkspace.set(this, void 0);
+        _NotionToJekyllClient_postDir.set(this, void 0);
+        __classPrivateFieldSet(this, _NotionToJekyllClient_notionClient, new client_1.Client({
+            auth: options.notion.apiKey,
+            logLevel: core.isDebug() ? client_1.LogLevel.DEBUG : client_1.LogLevel.WARN
+        }), "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_n2mClient, new notion_to_md_1.NotionToMarkdown({
+            notionClient: __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f"),
+            config: { separateChildPage: true }
+        }), "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_databaseId, options.notion.databaseId, "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_githubWorkspace, options.github.workspace, "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_postDir, options.github.post_dir, "f");
     }
+    // TODO: extract to Validator class
     validateDatabaseProperties() {
         return __awaiter(this, void 0, void 0, function* () {
-            const database = yield __classPrivateFieldGet(this, _NotionClient_client, "f").databases.retrieve({
-                database_id: __classPrivateFieldGet(this, _NotionClient_databaseId, "f")
+            const database = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.retrieve({
+                database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f")
             });
             if (!(0, client_1.isFullDatabase)(database)) {
                 throw new Error('Not a database');
@@ -33570,10 +33597,17 @@ class NotionClient {
             (0, helper_1.validateProperty)(database.properties, model_1.PROPERTY_NAMES.POST_PATH, 'rich_text');
         });
     }
+    // TODO: extract to Validator class
+    validatePostDirectory() {
+        const postDirectory = path_1.default.join(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"));
+        if (!fs_1.default.existsSync(postDirectory)) {
+            throw new Error(`⛔️ Post directory "${__classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f")}" does not exist.`);
+        }
+    }
     getPages(page_size = 100, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield __classPrivateFieldGet(this, _NotionClient_client, "f").databases.query({
-                database_id: __classPrivateFieldGet(this, _NotionClient_databaseId, "f"),
+            const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.query({
+                database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f"),
                 page_size,
                 start_cursor: cursor
             });
@@ -33586,7 +33620,7 @@ class NotionClient {
     }
     updatePage(pageId, postPath) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield __classPrivateFieldGet(this, _NotionClient_client, "f").pages.update({
+            const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").pages.update({
                 page_id: pageId,
                 properties: {
                     [model_1.PROPERTY_NAMES.POST_PATH]: {
@@ -33612,55 +33646,44 @@ class NotionClient {
             return (0, mapper_1.toPage)(response);
         });
     }
+    savePagesAsMarkdown(pages) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const page of (0, filter_1.filterNotSynchronized)(pages)) {
+                const markdown = yield this.getMarkdownAsString(page.id);
+                const directory = path_1.default.join(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"));
+                const result = yield (0, file_manager_1.saveMarkdownAsFile)(directory, page, markdown);
+                const updatedPage = yield this.updatePage(page.id, result.post_path);
+                console.log(`👻 Synchronized "${updatedPage.title}" to "${updatedPage.post_path}"`);
+            }
+        });
+    }
+    getMarkdownAsString(pageId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const mdBlocks = yield __classPrivateFieldGet(this, _NotionToJekyllClient_n2mClient, "f").pageToMarkdown(pageId);
+            return __classPrivateFieldGet(this, _NotionToJekyllClient_n2mClient, "f").toMarkdownString(mdBlocks)['parent'];
+        });
+    }
 }
-exports.NotionClient = NotionClient;
-_NotionClient_client = new WeakMap(), _NotionClient_databaseId = new WeakMap();
+exports.NotionToJekyllClient = NotionToJekyllClient;
+_NotionToJekyllClient_notionClient = new WeakMap(), _NotionToJekyllClient_n2mClient = new WeakMap(), _NotionToJekyllClient_databaseId = new WeakMap(), _NotionToJekyllClient_githubWorkspace = new WeakMap(), _NotionToJekyllClient_postDir = new WeakMap();
 
 
 /***/ }),
 
-/***/ 9938:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ 4587:
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _NotionToMarkdownClient_client;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotionToMarkdownClient = void 0;
-class NotionToMarkdownClient {
-    constructor(notionToMarkdown) {
-        _NotionToMarkdownClient_client.set(this, void 0);
-        __classPrivateFieldSet(this, _NotionToMarkdownClient_client, notionToMarkdown, "f");
-    }
-    getMarkdownAsString(pageId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const mdBlocks = yield __classPrivateFieldGet(this, _NotionToMarkdownClient_client, "f").pageToMarkdown(pageId);
-            return __classPrivateFieldGet(this, _NotionToMarkdownClient_client, "f").toMarkdownString(mdBlocks)['parent'];
-        });
-    }
-}
-exports.NotionToMarkdownClient = NotionToMarkdownClient;
-_NotionToMarkdownClient_client = new WeakMap();
+exports.PROPERTY_NAMES = void 0;
+exports.PROPERTY_NAMES = {
+    TITLE: '[notion-to-jekyll] title',
+    CATEGORIES: '[notion-to-jekyll] categories',
+    TAGS: '[notion-to-jekyll] tags',
+    SYNC_TIME: '[notion-to-jekyll] sync time',
+    POST_PATH: '[notion-to-jekyll] post path'
+};
 
 
 /***/ }),
@@ -33706,142 +33729,80 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.start = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-const main_1 = __nccwpck_require__(399);
 const node_child_process_1 = __nccwpck_require__(7718);
 const path_1 = __importDefault(__nccwpck_require__(1017));
+const client_1 = __nccwpck_require__(2344);
+const filter_1 = __nccwpck_require__(2284);
 const INPUTS = {
     NOTION_API_KEY: 'notion_api_key',
     NOTION_DATABASE_ID: 'notion_database_id',
-    GITHUB_WORKSPACE: 'github_workspace'
+    GITHUB_WORKSPACE: 'github_workspace',
+    POST_DIR: 'post_dir'
 };
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const notionApiKey = core.getInput(INPUTS.NOTION_API_KEY, {
-                required: true
-            });
-            const notionDatabaseId = core.getInput(INPUTS.NOTION_DATABASE_ID, {
-                required: true
-            });
-            const githubWorkspace = core.getInput(INPUTS.GITHUB_WORKSPACE, {
-                required: true
-            });
-            const options = {
-                notion: {
-                    apiKey: notionApiKey,
-                    databaseId: notionDatabaseId
-                },
-                github: {
-                    workspace: githubWorkspace
-                }
-            };
-            yield (0, main_1.run)(options);
+        const options = importOptions();
+        const client = new client_1.NotionToJekyllClient(options);
+        client.validatePostDirectory();
+        yield client.validateDatabaseProperties();
+        const pages = yield client.getPages();
+        const targets = (0, filter_1.filterNotSynchronized)(pages);
+        if (targets.length === 0) {
+            core.warning('👻 No pages to synchronize.');
+            return;
         }
-        catch (e) {
-            core.setFailed(`${e instanceof Error ? e.message : e}`);
-        }
+        yield client.savePagesAsMarkdown(pages);
         yield exec('bash', [path_1.default.join(__dirname, '../script/run.sh')], {
             env: Object.assign({}, process.env)
         });
     });
 }
-const exec = (cmd, args = [], options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    new Promise((resolve, reject) => (0, node_child_process_1.spawn)(cmd, args, Object.assign({ stdio: 'inherit' }, options))
-        .on('close', code => {
-        if (code !== 0) {
-            return reject(Object.assign(new Error(`Invalid exit code: ${code}`), { code }));
+exports.start = start;
+function importOptions() {
+    return {
+        notion: {
+            apiKey: core.getInput(INPUTS.NOTION_API_KEY, {
+                required: true
+            }),
+            databaseId: core.getInput(INPUTS.NOTION_DATABASE_ID, {
+                required: true
+            })
+        },
+        github: {
+            workspace: core.getInput(INPUTS.GITHUB_WORKSPACE, {
+                required: true
+            }),
+            post_dir: core.getInput(INPUTS.POST_DIR, {
+                required: true
+            })
         }
-        return resolve(code);
-    })
-        .on('error', reject));
-});
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield start();
-}))();
-
-
-/***/ }),
-
-/***/ 399:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterNotSynchronized = exports.run = void 0;
-const file_manager_1 = __nccwpck_require__(1277);
-const path_1 = __importDefault(__nccwpck_require__(1017));
-const client_1 = __nccwpck_require__(324);
-const notion_to_md_1 = __nccwpck_require__(4377);
-const notion_client_1 = __nccwpck_require__(314);
-const core = __importStar(__nccwpck_require__(2186));
-const notion_to_markdown_client_1 = __nccwpck_require__(9938);
-const BASE_POST_PATH = '_posts';
-function run(options) {
+    };
+}
+function exec(cmd, args, options) {
     return __awaiter(this, void 0, void 0, function* () {
-        const notion = new client_1.Client({
-            auth: options.notion.apiKey,
-            logLevel: core.isDebug() ? client_1.LogLevel.DEBUG : client_1.LogLevel.WARN
+        return new Promise((resolve, reject) => {
+            const child = (0, node_child_process_1.spawn)(cmd, args, Object.assign({ stdio: 'inherit' }, options));
+            child.on('close', code => {
+                if (code !== 0) {
+                    return reject(Object.assign(new Error(`Invalid exit code: ${code}`), { code }));
+                }
+                return resolve(code);
+            });
+            child.on('error', reject);
         });
-        const notionToMarkdown = new notion_to_md_1.NotionToMarkdown({
-            notionClient: notion,
-            config: { separateChildPage: true }
-        });
-        const notionClient = new notion_client_1.NotionClient(notion, options.notion.databaseId);
-        const notionToMarkdownClient = new notion_to_markdown_client_1.NotionToMarkdownClient(notionToMarkdown);
-        yield notionClient.validateDatabaseProperties();
-        const pages = yield notionClient.getPages(); // TODO: If pages size is over 100 ?
-        for (const page of filterNotSynchronized(pages)) {
-            const markdown = yield notionToMarkdownClient.getMarkdownAsString(page.id);
-            const directory = path_1.default.join(options.github.workspace, BASE_POST_PATH);
-            const result = yield (0, file_manager_1.saveMarkdownAsFile)(directory, page, markdown);
-            const updatedPage = yield notionClient.updatePage(page.id, result.post_path);
-            console.log(`👻 Synchronized "${updatedPage.title}" to "${updatedPage.post_path}"`);
-        }
     });
 }
-exports.run = run;
-function filterNotSynchronized(pages) {
-    return pages.contents.filter(page => page.synchronized_time === null ||
-        new Date(page.synchronized_time) < new Date(page.last_edited_time));
-}
-exports.filterNotSynchronized = filterNotSynchronized;
+// ------- Bootstrap -------
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield start();
+    }
+    catch (e) {
+        core.setFailed(`${e instanceof Error ? e.message : e}`);
+    }
+}))();
 
 
 /***/ }),
@@ -33918,6 +33879,24 @@ function generateMetadata(page) {
     ];
     return metadataLines.join('\n');
 }
+
+
+/***/ }),
+
+/***/ 2284:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.filterNotSynchronized = void 0;
+function filterNotSynchronized(pages) {
+    const filtered = pages.contents.filter(page => page.synchronized_time === null ||
+        new Date(page.synchronized_time) < new Date(page.last_edited_time));
+    console.log(`📝 ${filtered.length} pages found.`);
+    return filtered;
+}
+exports.filterNotSynchronized = filterNotSynchronized;
 
 
 /***/ }),
@@ -35881,7 +35860,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 8977:
+/***/ 3797:
 /***/ ((module) => {
 
 "use strict";
