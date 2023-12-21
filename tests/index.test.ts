@@ -11,7 +11,7 @@ beforeAll(() => {
 describe('Bootstrap', () => {
   it('should check post directory exists', async () => {
     await expect(start()).rejects.toThrow(
-      '⛔️ Post directory "/home/runner/work/notion-to-jekyll/notion-to-jekyll/_posts" does not exist.'
+      '⛔️ Post directory "_posts" does not exist.'
     );
   });
 });
