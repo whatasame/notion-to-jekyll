@@ -12,8 +12,8 @@ export async function saveMarkdownAsFile(
   page: Page,
   markdown: string
 ): Promise<SaveResult> {
-  const yymmdd = page.last_edited_time.split('T')[0];
-  const hyphenatedTitle = page.title.replace(/\s/g, '-');
+  const yymmdd = page.created_time.split('T')[0];
+  const hyphenatedTitle = page.title.trim().replace(/\s/g, '-');
   const filename = `${yymmdd}-${hyphenatedTitle}.md`;
 
   const fullPath = path.join(directory, filename);
