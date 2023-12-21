@@ -28,13 +28,11 @@ export async function saveMarkdownAsFile(
 }
 
 function generateMetadata(page: Page): string {
-  const yymmdd = page.created_time.split('T')[0];
-
   const metadataLines = [
     '---',
     'layout: post',
     `title: ${page.title}`,
-    `date: ${yymmdd}`,
+    `date: ${page.created_time}`,
     `categories: [${page.categories.join(', ')}]`,
     `tags: [${page.tags.join(', ')}]`,
     '---'

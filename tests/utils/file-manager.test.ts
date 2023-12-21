@@ -46,7 +46,7 @@ This is a test page.
       expect(data.toString()).toBe(`---
 layout: post
 title:  null sync time 
-date: 2023-12-17
+date: 2023-12-17T15:43:00.000Z
 categories: [infra, tools]
 tags: [null]
 ---
