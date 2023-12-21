@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import { spawn } from 'node:child_process';
 import path from 'path';
 import { NotionToJekyllClient, Options } from './core/client';
+import { filterNotSynchronized } from './utils/filter';
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
@@ -17,8 +18,8 @@ export async function start(): Promise<void> {
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
   const pages = await client.getPages();
-  console.log(`📝 ${pages.contents.length} pages found.`);
-  if (pages.contents.length === 0) {
+  const targets = filterNotSynchronized(pages);
+  if (targets.length === 0) {
     core.warning('👻 No target pages.');
     return;
   }
