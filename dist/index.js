@@ -33853,8 +33853,8 @@ const fs = __importStar(__nccwpck_require__(5630));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 function saveMarkdownAsFile(directory, page, markdown) {
     return __awaiter(this, void 0, void 0, function* () {
-        const yymmdd = page.last_edited_time.split('T')[0];
-        const hyphenatedTitle = page.title.replace(/\s/g, '-');
+        const yymmdd = page.created_time.split('T')[0];
+        const hyphenatedTitle = page.title.trim().replace(/\s/g, '-');
         const filename = `${yymmdd}-${hyphenatedTitle}.md`;
         const fullPath = path_1.default.join(directory, filename);
         const data = [generateMetadata(page), markdown].join('\n\n');
@@ -33867,12 +33867,11 @@ function saveMarkdownAsFile(directory, page, markdown) {
 }
 exports.saveMarkdownAsFile = saveMarkdownAsFile;
 function generateMetadata(page) {
-    const yymmdd = page.created_time.split('T')[0];
     const metadataLines = [
         '---',
         'layout: post',
         `title: ${page.title}`,
-        `date: ${yymmdd}`,
+        `date: ${page.created_time}`,
         `categories: [${page.categories.join(', ')}]`,
         `tags: [${page.tags.join(', ')}]`,
         '---'
