@@ -1,28 +1,32 @@
-import { Client, isFullDatabase, isFullPage } from '@notionhq/client'
-import { Page, Pages, PROPERTY_NAMES } from './model'
-import { validateProperty } from '../utils/helper'
-import { toPage } from '../utils/mapper'
+import { Client, isFullDatabase, isFullPage } from '@notionhq/client';
+import { Page, Pages, PROPERTY_NAMES } from './model';
+import { validateProperty } from '../utils/helper';
+import { toPage } from '../utils/mapper';
 
 export class NotionClient {
-  readonly #client: Client
-  readonly #databaseId: string
+  readonly #client: Client;
+  readonly #databaseId: string;
 
   constructor(client: Client, databaseId: string) {
-    this.#client = client
-    this.#databaseId = databaseId
+    this.#client = client;
+    this.#databaseId = databaseId;
   }
 
   async validateDatabaseProperties(): Promise<void> {
     const database = await this.#client.databases.retrieve({
       database_id: this.#databaseId
-    })
+    });
     if (!isFullDatabase(database)) {
-      throw new Error('Not a database')
+      throw new Error('Not a database');
     }
 
-    validateProperty(database.properties, PROPERTY_NAMES.TAGS, 'multi_select')
-    validateProperty(database.properties, PROPERTY_NAMES.SYNC_TIME, 'date')
-    validateProperty(database.properties, PROPERTY_NAMES.POST_PATH, 'rich_text')
+    validateProperty(database.properties, PROPERTY_NAMES.TAGS, 'multi_select');
+    validateProperty(database.properties, PROPERTY_NAMES.SYNC_TIME, 'date');
+    validateProperty(
+      database.properties,
+      PROPERTY_NAMES.POST_PATH,
+      'rich_text'
+    );
   }
 
   async getPages(page_size = 100, cursor?: string): Promise<Pages> {
@@ -30,13 +34,13 @@ export class NotionClient {
       database_id: this.#databaseId,
       page_size,
       start_cursor: cursor
-    })
+    });
 
     return {
       contents: response.results.filter(isFullPage).map(toPage),
       has_more: response.has_more,
       next_cursor: response.next_cursor
-    }
+    };
   }
 
   async updatePage(pageId: string, postPath: string): Promise<Page> {
@@ -59,12 +63,12 @@ export class NotionClient {
           }
         }
       }
-    })
+    });
 
     if (!isFullPage(response)) {
-      throw new Error('Not a page')
+      throw new Error('Not a page');
     }
 
-    return toPage(response)
+    return toPage(response);
   }
 }

@@ -1,6 +1,6 @@
-import { NotionToMarkdownClient } from '../../src/core/notion-to-markdown-client'
-import { NotionToMarkdown } from 'notion-to-md'
-import { Client, LogLevel } from '@notionhq/client'
+import { NotionToMarkdownClient } from '../../src/core/notion-to-markdown-client';
+import { NotionToMarkdown } from 'notion-to-md';
+import { Client, LogLevel } from '@notionhq/client';
 
 describe('NotionToMarkdownClient', () => {
   const notionToMarkdownClient = new NotionToMarkdownClient(
@@ -11,13 +11,13 @@ describe('NotionToMarkdownClient', () => {
       }),
       config: { separateChildPage: true }
     })
-  )
+  );
 
-  const pageId = process.env.NOTION_TO_JEKYLL_PAGE_ID as string
+  const pageId = process.env.NOTION_TO_JEKYLL_PAGE_ID as string;
 
   it('should get markdown by page id', async () => {
-    const markdown = await notionToMarkdownClient.getMarkdownAsString(pageId)
+    const markdown = await notionToMarkdownClient.getMarkdownAsString(pageId);
 
-    expect(markdown).toBeTruthy()
-  })
-})
+    expect(markdown).toBeTruthy();
+  });
+});
