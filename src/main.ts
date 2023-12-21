@@ -9,7 +9,7 @@ import { Page, Pages } from './core/model'
 
 const BASE_POST_PATH = '_posts'
 
-interface Options {
+export interface Options {
   notion: {
     apiKey: string
     databaseId: string
