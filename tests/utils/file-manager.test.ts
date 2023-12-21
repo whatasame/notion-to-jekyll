@@ -38,7 +38,7 @@ This is a test page.
   it('should have correct metadata in the saved markdown file', async () => {
     const uploadedPage = await saveMarkdownAsFile(directory, page, markdown);
 
-    fs.readFile(uploadedPage.post_path, (err, data) => {
+    fs.readFile(uploadedPage.post_path, (_err, data) => {
       expect(data.toString()).toBe(`---
 layout: post
 title: null sync time

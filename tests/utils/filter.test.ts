@@ -1,5 +1,5 @@
 import { Page, Pages } from '../../src/core/model';
-import { filterNotSynchronized } from '../../src/main';
+import { filterNotSynchronized } from '../../src/utils/filter';
 
 describe('Pages are given', () => {
   const nullSyncTime: Page = {
