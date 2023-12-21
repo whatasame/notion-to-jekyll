@@ -1,8 +1,7 @@
-import { NotionClient } from '../../src/core/notion-client';
 import { Client, LogLevel } from '@notionhq/client';
 
 describe('Notion client', () => {
-  const notionClient = new NotionClient(
+  const notionClient = new Client(
     new Client({
       auth: process.env.NOTION_TO_JEKYLL_API_KEY as string,
       logLevel: LogLevel.DEBUG

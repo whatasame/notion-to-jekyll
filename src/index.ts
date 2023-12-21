@@ -1,8 +1,7 @@
 import * as core from '@actions/core';
-import { Options, run } from './main';
 import { spawn } from 'node:child_process';
 import path from 'path';
-import * as fs from 'fs';
+import { NotionToJekyllClient, Options } from './core/client';
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
@@ -13,10 +12,17 @@ const INPUTS = {
 
 export async function start(): Promise<void> {
   const options = importOptions();
-  validatePostDirectory(options.github.workspace, options.github.post_dir);
 
-  await run(options);
+  const client = new NotionToJekyllClient(options);
+  client.validatePostDirectory();
+  await client.validateDatabaseProperties();
+  const pages = await client.getPages();
+  if (pages.contents.length === 0) {
+    core.warning('👻 No target pages.');
+    return;
+  }
 
+  await client.savePagesAsMarkdown(pages);
   await exec('bash', [path.join(__dirname, '../script/run.sh')], {
     env: {
       ...process.env
@@ -43,14 +49,6 @@ function importOptions(): Options {
       })
     }
   };
-}
-
-function validatePostDirectory(workspace: string, post_dir: string): void {
-  const postDirectory = path.join(workspace, post_dir);
-  console.log(`postDirectory: ${postDirectory}`);
-  if (!fs.existsSync(postDirectory)) {
-    throw new Error(`⛔️ Post directory "${postDirectory}" does not exist.`);
-  }
 }
 
 async function exec(
