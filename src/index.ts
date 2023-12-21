@@ -20,7 +20,7 @@ export async function start(): Promise<void> {
   const pages = await client.getPages();
   const targets = filterNotSynchronized(pages);
   if (targets.length === 0) {
-    core.warning('👻 No target pages.');
+    core.warning('👻 No pages to synchronize.');
     return;
   }
 

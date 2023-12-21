@@ -63,7 +63,7 @@ export class NotionToJekyllClient {
   validatePostDirectory(): void {
     const postDirectory = path.join(this.#githubWorkspace, this.#postDir);
     if (!fs.existsSync(postDirectory)) {
-      throw new Error(`⛔️ Post directory "${postDirectory}" does not exist.`);
+      throw new Error(`⛔️ Post directory "${this.#postDir}" does not exist.`);
     }
   }
 
