@@ -7,8 +7,6 @@ import * as core from '@actions/core';
 import { NotionToMarkdownClient } from './core/notion-to-markdown-client';
 import { Page, Pages } from './core/model';
 
-const BASE_POST_PATH = '_posts';
-
 export interface Options {
   notion: {
     apiKey: string;
@@ -16,6 +14,7 @@ export interface Options {
   };
   github: {
     workspace: string;
+    post_dir: string;
   };
 }
 
@@ -36,7 +35,10 @@ export async function run(options: Options): Promise<void> {
   for (const page of filterNotSynchronized(pages)) {
     const markdown = await notionToMarkdownClient.getMarkdownAsString(page.id);
 
-    const directory = path.join(options.github.workspace, BASE_POST_PATH);
+    const directory = path.join(
+      options.github.workspace,
+      options.github.post_dir
+    );
     const result = await saveMarkdownAsFile(directory, page, markdown);
     const updatedPage = await notionClient.updatePage(
       page.id,

@@ -7,12 +7,13 @@ import * as fs from 'fs';
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
   NOTION_DATABASE_ID: 'notion_database_id',
-  GITHUB_WORKSPACE: 'github_workspace'
+  GITHUB_WORKSPACE: 'github_workspace',
+  POST_DIR: 'post_dir'
 };
 
 export async function start(): Promise<void> {
   const options = importOptions();
-  validatePostDirectory(options.github.workspace);
+  validatePostDirectory(options.github.workspace, options.github.post_dir);
 
   await run(options);
 
@@ -36,13 +37,17 @@ function importOptions(): Options {
     github: {
       workspace: core.getInput(INPUTS.GITHUB_WORKSPACE, {
         required: true
+      }),
+      post_dir: core.getInput(INPUTS.POST_DIR, {
+        required: true
       })
     }
   };
 }
 
-function validatePostDirectory(workspace: string): void {
-  const postDirectory = path.join(workspace, '_posts');
+function validatePostDirectory(workspace: string, post_dir: string): void {
+  const postDirectory = path.join(workspace, post_dir);
+  console.log(`postDirectory: ${postDirectory}`);
   if (!fs.existsSync(postDirectory)) {
     throw new Error(`⛔️ Post directory "${postDirectory}" does not exist.`);
   }
