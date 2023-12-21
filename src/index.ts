@@ -17,6 +17,7 @@ export async function start(): Promise<void> {
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
   const pages = await client.getPages();
+  console.log(`📝 ${pages.contents.length} pages found.`);
   if (pages.contents.length === 0) {
     core.warning('👻 No target pages.');
     return;
