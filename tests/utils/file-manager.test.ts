@@ -12,7 +12,7 @@ afterEach(async () => {
 describe('FileManager', () => {
   const page: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
-    title: 'null sync time',
+    title: ' null sync time ',
     categories: ['infra', 'tools'],
     tags: ['null'],
     created_time: '2023-12-17T15:43:00.000Z',
@@ -38,11 +38,15 @@ This is a test page.
   it('should have correct metadata in the saved markdown file', async () => {
     const uploadedPage = await saveMarkdownAsFile(directory, page, markdown);
 
+    expect(uploadedPage.post_path).toBe(
+      `${directory}/2023-12-17-null-sync-time.md`
+    );
+    expect(uploadedPage.synchronized_time).toBeTruthy();
     fs.readFile(uploadedPage.post_path, (_err, data) => {
       expect(data.toString()).toBe(`---
 layout: post
-title: null sync time
-date: 2023-12-17
+title:  null sync time 
+date: 2023-12-17T15:43:00.000Z
 categories: [infra, tools]
 tags: [null]
 ---
