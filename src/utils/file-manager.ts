@@ -2,7 +2,8 @@ import { Page } from '../core/model';
 import * as fs from 'fs-extra';
 import path from 'path';
 
-type SaveResult = {
+export type SaveResult = {
+  page_id: string;
   synchronized_time: string;
   post_path: string;
 };
@@ -22,6 +23,7 @@ export async function saveMarkdownAsFile(
   await fs.outputFile(fullPath, data, 'utf-8');
 
   return {
+    page_id: page.id,
     synchronized_time: new Date().toISOString(),
     post_path: fullPath
   };

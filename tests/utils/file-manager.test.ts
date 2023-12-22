@@ -34,6 +34,7 @@ This is a test page.
     const uploadedPage = await saveMarkdownAsFile(directory, page, markdown);
 
     expect(uploadedPage).toEqual({
+      page_id: expect.any(String),
       synchronized_time: expect.any(String),
       post_path: expect.any(String)
     });

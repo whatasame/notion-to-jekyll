@@ -22,7 +22,7 @@ export async function start(): Promise<void> {
   const pages = await client.getPages();
 
   const pageToSync = filterNotSynchronized(pages);
-  await client.savePagesAsMarkdown(pageToSync);
+  const saveResults = await client.savePagesAsMarkdown(pageToSync);
 
   const postFiles = await getFilePaths(
     path.join(options.github.workspace, options.github.post_dir),
@@ -35,7 +35,8 @@ export async function start(): Promise<void> {
   // TODO: 저장할 페이지가 없거나 삭제할 페이지가 없으면 경고 코드 -> 경고 메시지 리스트 가능?
   // TODO: 스크립트 실행 실패시 에러 코드
   execBash(path.join(__dirname, '../scripts/run.sh'), paths);
-  // TODO: 경로 업데이트를 여기서?
+
+  await client.updateSaveResults(saveResults);
 }
 
 function importOptions(): Options {
