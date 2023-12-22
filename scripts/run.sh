@@ -6,6 +6,7 @@ _main(){
 
 _add(){
   echo "📝 Adding posts..."
+
   if git status | grep -q "nothing to commit"; then
       echo "No changes detected. Exiting..."
       exit 0
