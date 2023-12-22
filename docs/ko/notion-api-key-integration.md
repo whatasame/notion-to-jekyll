@@ -7,11 +7,9 @@
 Notion to Jekyll은 Notion API를 사용하여 Notion에 작성한 글을 Jekyll 블로그에 동기화합니다. Notion API 키를 발급받는 방법은
 다음과 같습니다.
 
-### Notion developer integration 접속
+### 새 API 통합 만들기
 
 [Notion developer integration](https://www.notion.so/my-integrations)에 접속합니다.
-
-### 새 API 통합 만들기
 
 ![integration-page](https://github.com/whatasame/notion-to-jekyll/assets/97666463/265049e8-935b-4a58-bae8-2f49b33a868b)
 

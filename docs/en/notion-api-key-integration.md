@@ -7,11 +7,9 @@ This document describes how to issue a Notion API key and create an integration 
 Notion to Jekyll uses the Notion API to synchronize posts written in Notion to Jekyll blog. The way to issue a Notion
 API key is as follows.
 
-### Enter Notion developer integration
+### Create new integration
 
 Go to [Notion developer integration](https://www.notion.so/my-integrations).
-
-### Create new integration
 
 ![img_1](https://github.com/whatasame/notion-to-jekyll/assets/97666463/9b23ad41-8c46-4d76-9f0c-5fd24e42246d)
 

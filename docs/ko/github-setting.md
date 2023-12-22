@@ -12,7 +12,6 @@ Jekyll 레포지토리에서 `Settings` > `Secrets and variables` > `Actions`로
 
 ![github-secrets](https://github.com/whatasame/notion-to-jekyll/assets/97666463/4be3964d-fb65-4808-b4cd-0e4937dc9e62)
 
-
 ### Notion API 키 설정
 
 위 사진에서 `New repository secret` 버튼을 클릭합니다.
@@ -26,11 +25,11 @@ Jekyll 레포지토리에서 `Settings` > `Secrets and variables` > `Actions`로
 한 번 더 `New repository secret` 버튼을 클릭합니다.
 
 > 데이터베이스 ID는 Notion 데이터베이스의 URL에서 확인할 수 있습니다.
+>
 > ![url-database-id](https://github.com/whatasame/notion-to-jekyll/assets/97666463/f1f1229b-5caa-487a-b1ab-7a99a2059ee5)
 
 
 ![github-secrets-database-id](https://github.com/whatasame/notion-to-jekyll/assets/97666463/f8890c34-dfaf-45ad-8c6c-8a0c92c91b64)
-
 
 Notion 데이터베이스 ID를 `Name`에 `NOTION_DATABASE_ID`를 입력하고 `Secret`에 Notion 데이터베이스 ID를 입력합니다.
 
@@ -39,7 +38,6 @@ Notion 데이터베이스 ID를 `Name`에 `NOTION_DATABASE_ID`를 입력하고 `
 Notion의 글을 레포지토리에 동기화하기 위해선 GitHub actions의 쓰기 권한이 필요합니다.
 
 ![github-actions](https://github.com/whatasame/notion-to-jekyll/assets/97666463/ff15916b-1acb-4e3b-b1e8-4939431b4514)
-
 
 Jekyll 레포지토리에서 `Settings` > `Actions` > `General`로 이동합니다.
 
