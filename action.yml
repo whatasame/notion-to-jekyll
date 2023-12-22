@@ -17,9 +17,6 @@ inputs:
     description: "Github workspace"
     required: false
     default: ${{ github.workspace }}
-  github_token:
-    description: "Github token"
-    required: true
   post_dir:
     description: "Post directory"
     required: false
@@ -39,7 +36,7 @@ inputs:
   commit_message:
     description: "Commit message"
     required: false
-    default: "docs: Update posts"
+    default: "Synchronized by Notion to Jekyll"
   repository:
     description: "Repository"
     required: false
