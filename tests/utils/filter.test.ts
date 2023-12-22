@@ -64,25 +64,10 @@ describe('File exist but not exist in pages', () => {
     './_posts/2023-12-17-not-exist-page.md',
     './_posts/2023-12-17-exist-page.md'
   ];
-  const pages = {
-    contents: [
-      {
-        id: '12345678-9abc-def0-1234-56789abcdef0',
-        title: 'exist page',
-        categories: [],
-        tags: [],
-        created_time: '2023-12-17T15:43:00.000Z',
-        last_edited_time: '2023-12-17T15:43:00.000Z',
-        synchronized_time: null,
-        post_path: './_posts/2023-12-17-exist-page.md'
-      }
-    ],
-    has_more: false,
-    next_cursor: null
-  };
+  const titles = ['exist page'];
 
   it('should return target to delete pages', () => {
-    const target = filterPathsToDelete(paths, pages);
+    const target = filterPathsToDelete(paths, titles);
 
     expect(target).toEqual(['./_posts/2023-12-17-not-exist-page.md']);
   });

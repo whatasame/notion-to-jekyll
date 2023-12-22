@@ -27,7 +27,7 @@ export async function start(): Promise<void> {
         path.join(options.github.workspace, options.github.post_dir),
         ['.md', '.markdown']
       ),
-      pages
+      pages.contents.map(page => page.title)
     )
   );
 

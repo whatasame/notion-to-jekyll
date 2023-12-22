@@ -1,4 +1,5 @@
 import { Page, Pages } from '../core/model';
+import { toTitle } from './mapper';
 
 export function filterNotSynchronized(pages: Pages): Page[] {
   const filtered = pages.contents.filter(
@@ -11,12 +12,11 @@ export function filterNotSynchronized(pages: Pages): Page[] {
   return filtered;
 }
 
-export function filterPathsToDelete(paths: string[], pages: Pages): string[] {
-  // TODO: Improve performance
-  const filtered = Array.from(paths).filter(
-    path => !pages.contents.some(page => page.post_path === path)
-  );
-  console.log(`🗑 Found ${filtered.length} paths to delete.`);
+export function filterPathsToDelete(
+  paths: string[],
+  titles: string[]
+): string[] {
+  const titleSet = new Set(titles);
 
-  return filtered;
+  return paths.filter(path => !titleSet.has(toTitle(path)));
 }
