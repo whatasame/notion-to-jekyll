@@ -10,7 +10,7 @@ You can get a database template into your Notion workspace through the following
 
 Enter [Notion to Jekyll template](https://dorian-nasturtium-042.notion.site/79f7226185a74e49a974c475f47fae97?v=de1dc4c1af8e4200918889b7e2d98ad5).
 
-![img.png](img.png)
+![img](https://github.com/whatasame/notion-to-jekyll/assets/97666463/bed883bd-9207-42af-b43e-50e153012ef2)
 
 Click the `Duplicate` button in the upper right corner to get the template into your Notion workspace.
 
