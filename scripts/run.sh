@@ -1,9 +1,9 @@
 _main(){
   _parse || { echo "Failed to parse input"; exit 1; }
-  _remove || { echo "Failed to remove posts"; exit 1; }
-  _add || { echo "Failed to add posts"; exit 1; }
-  _commit || { echo "Failed to commit changes"; exit 1; }
-  _push || { echo "Failed to push changes"; exit 1; }
+  _remove || { echo "Failed to remove posts"; exit 2; }
+  _add || { echo "Failed to add posts"; exit 3; }
+  _commit || { echo "Failed to commit changes"; exit 4; }
+  _push || { echo "Failed to push changes"; exit 5; }
 }
 
 _parse() {
@@ -14,33 +14,33 @@ _parse() {
 }
 
 _remove(){
-  echo "🧹 Removing posts..."
   for path in "${removePaths[@]}"; do
+    echo "Removing $path"
     if [ -f "$path" ]; then
+      echo "$path found!"
       rm "$path" || return 1
+    else
+      echo "$path not found!"
     fi
   done
 }
 
 _add(){
   echo "📝 Adding posts..."
+  if git status | grep -q "nothing to commit"; then
+      echo "No changes detected. Exiting..."
+      exit 0
+  fi
+
   git add "$INPUT_POST_DIR" || return 1
 }
 
 _commit(){
   echo "📦 Committing changes..."
-  commit_result=$(git -c user.name="$INPUT_COMMIT_USERNAME" -c user.email="$INPUT_COMMIT_EMAIL" \
-    commit -m "$INPUT_COMMIT_MESSAGE" \
-    --author="$INPUT_COMMIT_AUTHOR" 2>&1)
 
-  exit_status=$?
-  if [ $exit_status -ne 0 ]; then
-    echo "$commit_result"
-    exit 1
-  elif git status | grep -q "nothing to commit"; then
-    echo "No changes detected. Exiting..."
-    exit 0
-  fi
+  git -c user.name="$INPUT_COMMIT_USERNAME" -c user.email="$INPUT_COMMIT_EMAIL" \
+    commit -m "$INPUT_COMMIT_MESSAGE" \
+    --author="$INPUT_COMMIT_AUTHOR" || return 1
 }
 
 _push(){

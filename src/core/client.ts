@@ -123,7 +123,7 @@ export class NotionToJekyllClient {
       const directory = path.join(this.#githubWorkspace, this.#postDir);
       const result = await saveMarkdownAsFile(directory, page, markdown);
       saveResults.push(result);
-      console.log(`📝 Saved ${result.post_path}.`);
+      console.log(`📝 Saved to ${result.post_path}`);
     }
 
     return saveResults;
