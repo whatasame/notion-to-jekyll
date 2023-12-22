@@ -89,7 +89,7 @@ Permission to {username}/{repository} denied to github-actions[bot]
 ```
 
 This problem occurs because GitHub action does not have write permission to the repository. To solve this problem,
-please refer to [GitHub repository setting](./github-setting) for GitHub workflow permission setting.
+please refer to [Set up GitHub repository](./docs/en/github-setting.md) for GitHub workflow permission setting.
 
 ## Contributing
 
