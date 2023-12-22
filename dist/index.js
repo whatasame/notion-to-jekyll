@@ -33562,7 +33562,6 @@ const notion_to_md_1 = __nccwpck_require__(4377);
 const core = __importStar(__nccwpck_require__(2186));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const file_manager_1 = __nccwpck_require__(1277);
-const filter_1 = __nccwpck_require__(2284);
 const fs_1 = __importDefault(__nccwpck_require__(7147));
 class NotionToJekyllClient {
     constructor(options) {
@@ -33618,17 +33617,24 @@ class NotionToJekyllClient {
             };
         });
     }
-    updatePage(pageId, postPath) {
+    updateSaveResults(results) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const result of results) {
+                yield this.updatePage(result);
+            }
+        });
+    }
+    updatePage(result) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").pages.update({
-                page_id: pageId,
+                page_id: result.page_id,
                 properties: {
                     [model_1.PROPERTY_NAMES.POST_PATH]: {
                         rich_text: [
                             {
                                 type: 'text',
                                 text: {
-                                    content: postPath
+                                    content: result.post_path
                                 }
                             }
                         ]
@@ -33643,18 +33649,21 @@ class NotionToJekyllClient {
             if (!(0, client_1.isFullPage)(response)) {
                 throw new Error('Not a page');
             }
+            console.log(`👻 Synchronized "${result.post_path}"`);
             return (0, mapper_1.toPage)(response);
         });
     }
     savePagesAsMarkdown(pages) {
         return __awaiter(this, void 0, void 0, function* () {
-            for (const page of (0, filter_1.filterNotSynchronized)(pages)) {
+            const saveResults = [];
+            for (const page of pages) {
                 const markdown = yield this.getMarkdownAsString(page.id);
                 const directory = path_1.default.join(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"));
                 const result = yield (0, file_manager_1.saveMarkdownAsFile)(directory, page, markdown);
-                const updatedPage = yield this.updatePage(page.id, result.post_path);
-                console.log(`👻 Synchronized "${updatedPage.title}" to "${updatedPage.post_path}"`);
+                saveResults.push(result);
+                console.log(`📝 Saved to ${result.post_path}`);
             }
+            return saveResults;
         });
     }
     getMarkdownAsString(pageId) {
@@ -33735,6 +33744,7 @@ const node_child_process_1 = __nccwpck_require__(7718);
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const client_1 = __nccwpck_require__(2344);
 const filter_1 = __nccwpck_require__(2284);
+const file_manager_1 = __nccwpck_require__(1277);
 const INPUTS = {
     NOTION_API_KEY: 'notion_api_key',
     NOTION_DATABASE_ID: 'notion_database_id',
@@ -33748,15 +33758,13 @@ function start() {
         client.validatePostDirectory();
         yield client.validateDatabaseProperties();
         const pages = yield client.getPages();
-        const targets = (0, filter_1.filterNotSynchronized)(pages);
-        if (targets.length === 0) {
-            core.warning('👻 No pages to synchronize.');
-            return;
-        }
-        yield client.savePagesAsMarkdown(pages);
-        yield exec('bash', [path_1.default.join(__dirname, '../script/run.sh')], {
-            env: Object.assign({}, process.env)
-        });
+        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), pages.contents.map(page => page.title)));
+        const pageToSync = (0, filter_1.filterNotSynchronized)(pages);
+        const saveResults = yield client.savePagesAsMarkdown(pageToSync);
+        // TODO: If there is no page to save or delete, warning code -> warning message list possible?
+        // TODO: Throw error if script exit code is not 0 -> no update
+        execBash(path_1.default.join(__dirname, '../scripts/run.sh'));
+        yield client.updateSaveResults(saveResults);
     });
 }
 exports.start = start;
@@ -33780,18 +33788,16 @@ function importOptions() {
         }
     };
 }
-function exec(cmd, args, options) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            const child = (0, node_child_process_1.spawn)(cmd, args, Object.assign({ stdio: 'inherit' }, options));
-            child.on('close', code => {
-                if (code !== 0) {
-                    return reject(Object.assign(new Error(`Invalid exit code: ${code}`), { code }));
-                }
-                return resolve(code);
-            });
-            child.on('error', reject);
-        });
+function execBash(script) {
+    const child = (0, node_child_process_1.spawn)('bash', [script]);
+    child.stdout.on('data', data => {
+        console.log(`[Script] ${data.toString()}`);
+    });
+    child.stderr.on('data', data => {
+        console.error(`[Script] error: ${data}`);
+    });
+    child.on('close', code => {
+        console.log(`[Script] exited with code ${code}`);
     });
 }
 // ------- Bootstrap -------
@@ -33848,18 +33854,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.saveMarkdownAsFile = void 0;
+exports.removeFiles = exports.getFilePaths = exports.saveMarkdownAsFile = void 0;
 const fs = __importStar(__nccwpck_require__(5630));
 const path_1 = __importDefault(__nccwpck_require__(1017));
+const mapper_1 = __nccwpck_require__(3082);
 function saveMarkdownAsFile(directory, page, markdown) {
     return __awaiter(this, void 0, void 0, function* () {
-        const yymmdd = page.created_time.split('T')[0];
-        const hyphenatedTitle = page.title.trim().replace(/\s/g, '-');
-        const filename = `${yymmdd}-${hyphenatedTitle}.md`;
-        const fullPath = path_1.default.join(directory, filename);
+        const fullPath = (0, mapper_1.toPath)(directory, page.created_time, page.title);
         const data = [generateMetadata(page), markdown].join('\n\n');
         yield fs.outputFile(fullPath, data, 'utf-8');
         return {
+            page_id: page.id,
             synchronized_time: new Date().toISOString(),
             post_path: fullPath
         };
@@ -33878,24 +33883,51 @@ function generateMetadata(page) {
     ];
     return metadataLines.join('\n');
 }
+function getFilePaths(directory, extension) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const files = yield fs.readdir(directory);
+        return files
+            .map(file => path_1.default.join(directory, file))
+            .filter(file => extension.includes(path_1.default.extname(file)));
+    });
+}
+exports.getFilePaths = getFilePaths;
+function removeFiles(strings) {
+    for (const string of strings) {
+        if (!fs.existsSync(string)) {
+            continue;
+        }
+        fs.removeSync(string);
+        console.log(`🗑 Removed ${string}`);
+    }
+}
+exports.removeFiles = removeFiles;
 
 
 /***/ }),
 
 /***/ 2284:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterNotSynchronized = void 0;
+exports.filterPathsToDelete = exports.filterNotSynchronized = void 0;
+const mapper_1 = __nccwpck_require__(3082);
 function filterNotSynchronized(pages) {
     const filtered = pages.contents.filter(page => page.synchronized_time === null ||
         new Date(page.synchronized_time) < new Date(page.last_edited_time));
-    console.log(`📝 ${filtered.length} pages found.`);
+    console.log(`📝 Found ${filtered.length} pages to synchronize.`);
     return filtered;
 }
 exports.filterNotSynchronized = filterNotSynchronized;
+function filterPathsToDelete(paths, titles) {
+    const titleSet = new Set(titles);
+    const filtered = paths.filter(path => !titleSet.has((0, mapper_1.toTitle)(path)));
+    console.log(`🗑️ Found ${filtered.length} pages to delete.`);
+    return filtered;
+}
+exports.filterPathsToDelete = filterPathsToDelete;
 
 
 /***/ }),
@@ -33937,14 +33969,18 @@ exports.isRichTextProperty = isRichTextProperty;
 /***/ }),
 
 /***/ 3082:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.toPage = void 0;
+exports.toTitle = exports.toPath = exports.toPage = void 0;
 const model_1 = __nccwpck_require__(4587);
 const helper_1 = __nccwpck_require__(4862);
+const path_1 = __importDefault(__nccwpck_require__(1017));
 function toPage(result) {
     var _a, _b, _c, _d;
     // TODO: extract
@@ -33980,6 +34016,20 @@ function toPage(result) {
     };
 }
 exports.toPage = toPage;
+function toPath(directory, createTime, title) {
+    const yymmdd = createTime.split('T')[0];
+    const hyphenatedTitle = title.replace(/\s/g, '-');
+    const filename = `${yymmdd}-${hyphenatedTitle}.md`;
+    return path_1.default.join(directory, filename);
+}
+exports.toPath = toPath;
+function toTitle(fullPath) {
+    const file = fullPath.split('/').pop();
+    const name = file.split('.')[0];
+    const title = name.split('-').slice(3).join('-');
+    return title.replace(/-/g, ' ');
+}
+exports.toTitle = toTitle;
 
 
 /***/ }),
