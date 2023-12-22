@@ -1,5 +1,7 @@
 # Notion to Jekyll
 
+![logo](https://github.com/whatasame/notion-to-jekyll/assets/97666463/0d42ebeb-fba8-4f6b-a2d1-4b330106157a)
+
 Notion에 작성한 글을 Markdown으로 내보내고 업로드하는 귀찮은 과정은 이제 그만! Notion to Jekyll로 자동화하세요.
 
 Notion to Jekyll은 Notion에 작성한 글을 자동으로 Jekyll 블로그와 동기화해주는 GitHub action입니다.
