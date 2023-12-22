@@ -60,9 +60,23 @@ describe('Pages are given', () => {
 });
 
 describe('File exist but not exist in pages', () => {
-  const paths = ['./_posts/2023-12-17-only-file-exist.md'];
+  const paths = [
+    './_posts/2023-12-17-not-exist-page.md',
+    './_posts/2023-12-17-exist-page.md'
+  ];
   const pages = {
-    contents: [],
+    contents: [
+      {
+        id: '12345678-9abc-def0-1234-56789abcdef0',
+        title: 'exist page',
+        categories: [],
+        tags: [],
+        created_time: '2023-12-17T15:43:00.000Z',
+        last_edited_time: '2023-12-17T15:43:00.000Z',
+        synchronized_time: null,
+        post_path: './_posts/2023-12-17-exist-page.md'
+      }
+    ],
     has_more: false,
     next_cursor: null
   };
@@ -70,6 +84,6 @@ describe('File exist but not exist in pages', () => {
   it('should return target to delete pages', () => {
     const target = filterPathsToDelete(paths, pages);
 
-    expect(target).toEqual(['./_posts/2023-12-17-only-file-exist.md']);
+    expect(target).toEqual(['./_posts/2023-12-17-not-exist-page.md']);
   });
 });

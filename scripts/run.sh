@@ -1,28 +1,7 @@
 _main(){
-  _parse || { echo "Failed to parse input"; exit 1; }
-  _remove || { echo "Failed to remove posts"; exit 2; }
   _add || { echo "Failed to add posts"; exit 3; }
   _commit || { echo "Failed to commit changes"; exit 4; }
   _push || { echo "Failed to push changes"; exit 5; }
-}
-
-_parse() {
-  echo "🔍 Parsing script input..."
-  paths=$(cat)
-
-  mapfile -t removePaths < <(echo "$paths" | jq -r '.removePaths[]')
-}
-
-_remove(){
-  for path in "${removePaths[@]}"; do
-    echo "Removing $path"
-    if [ -f "$path" ]; then
-      echo "$path found!"
-      rm "$path" || return 1
-    else
-      echo "$path not found!"
-    fi
-  done
 }
 
 _add(){
