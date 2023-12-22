@@ -1,9 +1,13 @@
 import { Page } from '../../src/core/model';
-import { saveMarkdownAsFile } from '../../src/utils/file-manager';
+import { getFilePaths, saveMarkdownAsFile } from '../../src/utils/file-manager';
 import * as fs from 'fs-extra';
 import path from 'path';
 
 const directory = path.join(__dirname, '../', '_posts');
+
+beforeEach(async () => {
+  await fs.mkdir(directory);
+});
 
 afterEach(async () => {
   await fs.remove(directory);
@@ -56,5 +60,19 @@ tags: [null]
 This is a test page.
 `);
     });
+  });
+});
+
+describe('FileManager', () => {
+  it('should get post paths', async () => {
+    await fs.outputFile(path.join(directory, 'test.md'), 'test', 'utf-8');
+    await fs.outputFile(path.join(directory, 'test2.md'), 'test2', 'utf-8');
+
+    const postPaths = await getFilePaths(directory);
+
+    expect(postPaths).toEqual([
+      path.join(directory, 'test.md'),
+      path.join(directory, 'test2.md')
+    ]);
   });
 });
