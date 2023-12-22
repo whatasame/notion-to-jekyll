@@ -18,5 +18,8 @@ export function filterPathsToDelete(
 ): string[] {
   const titleSet = new Set(titles);
 
-  return paths.filter(path => !titleSet.has(toTitle(path)));
+  const filtered = paths.filter(path => !titleSet.has(toTitle(path)));
+  console.log(`🗑️ Found ${filtered.length} pages to delete.`);
+
+  return filtered;
 }
