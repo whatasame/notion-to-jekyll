@@ -24,7 +24,7 @@ export async function start(): Promise<void> {
     return;
   }
 
-  await client.savePagesAsMarkdown(pages);
+  await client.savePagesAsMarkdown(targets);
   await exec('bash', [path.join(__dirname, '../script/run.sh')], {
     env: {
       ...process.env

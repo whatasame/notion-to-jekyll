@@ -6,7 +6,6 @@ import { NotionToMarkdown } from 'notion-to-md';
 import * as core from '@actions/core';
 import path from 'path';
 import { saveMarkdownAsFile } from '../utils/file-manager';
-import { filterNotSynchronized } from '../utils/filter';
 import fs from 'fs';
 
 export interface Options {
@@ -110,8 +109,8 @@ export class NotionToJekyllClient {
     return toPage(response);
   }
 
-  async savePagesAsMarkdown(pages: Pages): Promise<void> {
-    for (const page of filterNotSynchronized(pages)) {
+  async savePagesAsMarkdown(pages: Page[]): Promise<void> {
+    for (const page of pages) {
       const markdown = await this.getMarkdownAsString(page.id);
 
       const directory = path.join(this.#githubWorkspace, this.#postDir);
