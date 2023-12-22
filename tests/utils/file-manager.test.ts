@@ -68,7 +68,7 @@ describe('FileManager', () => {
     await fs.outputFile(path.join(directory, 'test.md'), 'test', 'utf-8');
     await fs.outputFile(path.join(directory, 'test2.md'), 'test2', 'utf-8');
 
-    const postPaths = await getFilePaths(directory);
+    const postPaths = await getFilePaths(directory, ['.md']);
 
     expect(postPaths).toEqual([
       path.join(directory, 'test.md'),

@@ -41,8 +41,13 @@ function generateMetadata(page: Page): string {
   return metadataLines.join('\n');
 }
 
-export async function getFilePaths(directory: string): Promise<string[]> {
+export async function getFilePaths(
+  directory: string,
+  extension: string[]
+): Promise<string[]> {
   const files = await fs.readdir(directory);
 
-  return files.map(file => path.join(directory, file));
+  return files
+    .map(file => path.join(directory, file))
+    .filter(file => extension.includes(path.extname(file)));
 }
