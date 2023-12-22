@@ -33,8 +33,9 @@ export async function start(): Promise<void> {
 
   const pageToSync = filterNotSynchronized(pages);
   const saveResults = await client.savePagesAsMarkdown(pageToSync);
-  // TODO: 저장할 페이지가 없거나 삭제할 페이지가 없으면 경고 코드 -> 경고 메시지 리스트 가능?
-  // TODO: 스크립트 실행 실패시 에러 코드
+
+  // TODO: If there is no page to save or delete, warning code -> warning message list possible?
+  // TODO: Throw error if script exit code is not 0 -> no update
   execBash(path.join(__dirname, '../scripts/run.sh'));
 
   await client.updateSaveResults(saveResults);
