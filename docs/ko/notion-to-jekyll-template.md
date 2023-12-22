@@ -11,7 +11,7 @@
 [Notion to Jekyll 템플릿](https://dorian-nasturtium-042.notion.site/79f7226185a74e49a974c475f47fae97?v=de1dc4c1af8e4200918889b7e2d98ad5)
 에 접속합니다.
 
-![img_1.png](images/create-database.png)
+![create-database](https://github.com/whatasame/notion-to-jekyll/assets/97666463/cc31135d-6950-4b5f-a900-8702c068089e)
 
 우측 상단의 `복제` 버튼을 눌러 Notion 워크스페이스로 템플릿을 가져옵니다.
 
