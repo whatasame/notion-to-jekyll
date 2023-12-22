@@ -2,7 +2,8 @@ import * as core from '@actions/core';
 import { spawn } from 'node:child_process';
 import path from 'path';
 import { NotionToJekyllClient, Options } from './core/client';
-import { filterNotSynchronized } from './utils/filter';
+import { filterNotSynchronized, filterPathsToDelete } from './utils/filter';
+import { getFilePaths } from './utils/file-manager';
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
@@ -17,19 +18,23 @@ export async function start(): Promise<void> {
   const client = new NotionToJekyllClient(options);
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
-  const pages = await client.getPages();
-  const targets = filterNotSynchronized(pages);
-  if (targets.length === 0) {
-    core.warning('👻 No pages to synchronize.');
-    return;
-  }
 
-  await client.savePagesAsMarkdown(targets);
-  await exec('bash', [path.join(__dirname, '../script/run.sh')], {
-    env: {
-      ...process.env
-    }
+  const pages = await client.getPages();
+
+  const pageToSync = filterNotSynchronized(pages);
+  await client.savePagesAsMarkdown(pageToSync);
+
+  const postFiles = await getFilePaths(
+    path.join(options.github.workspace, options.github.post_dir)
+  );
+  const paths = JSON.stringify({
+    removePaths: filterPathsToDelete(postFiles, pages)
   });
+
+  // TODO: 저장할 페이지가 없거나 삭제할 페이지가 없으면 경고 코드 -> 경고 메시지 리스트 가능?
+  // TODO: 스크립트 실행 실패시 에러 코드
+  execBash(path.join(__dirname, './script/run.sh'), paths);
+  // TODO: 경로 업데이트를 여기서?
 }
 
 function importOptions(): Options {
@@ -53,23 +58,19 @@ function importOptions(): Options {
   };
 }
 
-async function exec(
-  cmd: string,
-  args: string[],
-  options: object
-): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, { stdio: 'inherit', ...options });
-    child.on('close', code => {
-      if (code !== 0) {
-        return reject(
-          Object.assign(new Error(`Invalid exit code: ${code}`), { code })
-        );
-      }
+function execBash(script: string, paths: string) {
+  const child = spawn('bash', ['-c', `echo '${paths}' | ${script}`]);
 
-      return resolve(code);
-    });
-    child.on('error', reject);
+  child.stdout.on('data', data => {
+    console.log('result', data.toString());
+  });
+
+  child.stderr.on('data', data => {
+    console.error(`error: ${data}`);
+  });
+
+  child.on('close', code => {
+    console.log(`exit: ${code}`);
   });
 }
 
