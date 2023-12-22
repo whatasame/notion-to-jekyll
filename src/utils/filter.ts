@@ -12,9 +12,10 @@ export function filterNotSynchronized(pages: Pages): Page[] {
 }
 
 export function filterPathsToDelete(paths: string[], pages: Pages): string[] {
-  const filtered = Array.from(paths).filter(path => {
-    return !pages.contents.some(page => page.post_path === path);
-  });
+  // TODO: Improve performance
+  const filtered = Array.from(paths).filter(
+    path => !pages.contents.some(page => page.post_path === path)
+  );
   console.log(`🗑 Found ${filtered.length} paths to delete.`);
 
   return filtered;
