@@ -12,9 +12,9 @@ Notion to Jekyll은 Notion에 작성한 글을 자동으로 Jekyll 블로그와 
 
 Notion to Jekyll을 사용하기 위해선 3가지 준비가 필요합니다. 만약 준비가 되어있지 않다면 각 항목의 링크를 참고해주세요.
 
-- [Notion API 키 발급](./notion-api-key-ko.md)
-- [Notion to Jekyll 데이터베이스 템플릿 생성](./notion-to-jekyll-template-ko.md)
-- [GitHub 레포지토리 설정](./github-setting-ko.md)
+1. [Notion to Jekyll 데이터베이스 템플릿 생성](./notion-to-jekyll-template.md)
+2. [Notion API 키 발급 및 연결 생성](./notion-api-key-integration.md)
+3. [GitHub 레포지토리 설정](./github-setting.md)
 
 모든 준비가 끝났다면 다음으로 넘어가서 GitHub action을 설정해주세요.
 
@@ -81,7 +81,7 @@ Notion to Jekyll은 다음과 같은 옵션을 제공합니다.
 Permission to {username}/{repository} denied to github-actions[bot]
 ```
 
-이는 GitHub action이 레포지토리에 쓰기 권한이 없어서 발생하는 문제입니다. 이를 해결하기 위해서는 [GitHub 레포지토리 설정](./github-setting-ko)에서 GitHub workflow 권한
+이는 GitHub action이 레포지토리에 쓰기 권한이 없어서 발생하는 문제입니다. 이를 해결하기 위해서는 [GitHub 레포지토리 설정](./github-setting)에서 GitHub workflow 권한
 설정을 참고하세요.
 
 ## 기여
