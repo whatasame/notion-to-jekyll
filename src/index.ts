@@ -64,15 +64,15 @@ function execBash(script: string, paths: string): void {
   const child = spawn('bash', ['-c', `echo '${paths}' | ${script}`]);
 
   child.stdout.on('data', data => {
-    console.log('result', data.toString());
+    console.log(`[Script] ${data.toString()}`);
   });
 
   child.stderr.on('data', data => {
-    console.error(`error: ${data}`);
+    console.error(`[Script] error: ${data}`);
   });
 
   child.on('close', code => {
-    console.log(`exit: ${code}`);
+    console.log(`[Script] exited with code ${code}`);
   });
 }
 

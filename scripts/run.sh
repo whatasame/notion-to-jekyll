@@ -29,9 +29,18 @@ _add(){
 
 _commit(){
   echo "📦 Committing changes..."
-  git -c user.name="$INPUT_COMMIT_USERNAME" -c user.email="$INPUT_COMMIT_EMAIL" \
+  commit_result=$(git -c user.name="$INPUT_COMMIT_USERNAME" -c user.email="$INPUT_COMMIT_EMAIL" \
     commit -m "$INPUT_COMMIT_MESSAGE" \
-    --author="$INPUT_COMMIT_AUTHOR" || return 1
+    --author="$INPUT_COMMIT_AUTHOR" 2>&1)
+
+  exit_status=$?
+  if [ $exit_status -ne 0 ]; then
+    echo "$commit_result"
+    exit 1
+  elif git status | grep -q "nothing to commit"; then
+    echo "No changes detected. Exiting..."
+    exit 0
+  fi
 }
 
 _push(){
