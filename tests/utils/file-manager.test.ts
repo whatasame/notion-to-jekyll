@@ -14,6 +14,20 @@ afterEach(async () => {
 });
 
 describe('FileManager', () => {
+  it('should get post paths', async () => {
+    await fs.outputFile(path.join(directory, 'test.md'), 'test', 'utf-8');
+    await fs.outputFile(path.join(directory, 'test2.md'), 'test2', 'utf-8');
+
+    const postPaths = await getFilePaths(directory, ['.md']);
+
+    expect(postPaths).toEqual([
+      path.join(directory, 'test.md'),
+      path.join(directory, 'test2.md')
+    ]);
+  });
+});
+
+describe('FileManager with page and markdown', () => {
   const page: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
     title: ' null sync time ',
@@ -61,19 +75,5 @@ tags: [null]
 This is a test page.
 `);
     });
-  });
-});
-
-describe('FileManager', () => {
-  it('should get post paths', async () => {
-    await fs.outputFile(path.join(directory, 'test.md'), 'test', 'utf-8');
-    await fs.outputFile(path.join(directory, 'test2.md'), 'test2', 'utf-8');
-
-    const postPaths = await getFilePaths(directory, ['.md']);
-
-    expect(postPaths).toEqual([
-      path.join(directory, 'test.md'),
-      path.join(directory, 'test2.md')
-    ]);
   });
 });

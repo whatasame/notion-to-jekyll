@@ -60,7 +60,7 @@ function importOptions(): Options {
   };
 }
 
-function execBash(script: string, paths: string) {
+function execBash(script: string, paths: string): void {
   const child = spawn('bash', ['-c', `echo '${paths}' | ${script}`]);
 
   child.stdout.on('data', data => {

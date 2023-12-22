@@ -80,7 +80,7 @@ export class NotionToJekyllClient {
     };
   }
 
-  async updateSaveResults(results: SaveResult[]) {
+  async updateSaveResults(results: SaveResult[]): Promise<void> {
     for (const result of results) {
       await this.updatePage(result);
     }
