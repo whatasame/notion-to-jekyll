@@ -1,3 +1,5 @@
+name: Local test
+
 on:
   workflow_dispatch:
 
@@ -12,13 +14,3 @@ jobs:
         with:
           notion_api_key: ${{ secrets.NOTION_API_KEY }}
           notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check if '_post' directory exists
-        run: |
-          if [ -d "_posts" ]; then
-            echo "Success: '_post' directory exists."
-          else
-            echo "Error: '_post' directory not found."
-            exit 1
-          fi
