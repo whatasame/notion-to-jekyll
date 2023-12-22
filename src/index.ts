@@ -33,7 +33,7 @@ export async function start(): Promise<void> {
 
   // TODO: 저장할 페이지가 없거나 삭제할 페이지가 없으면 경고 코드 -> 경고 메시지 리스트 가능?
   // TODO: 스크립트 실행 실패시 에러 코드
-  execBash(path.join(__dirname, './script/run.sh'), paths);
+  execBash(path.join(__dirname, './scripts/run.sh'), paths);
   // TODO: 경로 업데이트를 여기서?
 }
 
