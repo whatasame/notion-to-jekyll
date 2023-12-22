@@ -7,6 +7,7 @@ import {
   isRichTextProperty,
   isTitleProperty
 } from './helper';
+import path from 'path';
 
 export function toPage(result: PageObjectResponse): Page {
   // TODO: extract
@@ -53,4 +54,24 @@ export function toPage(result: PageObjectResponse): Page {
     synchronized_time: synchronizedTime.date?.start ?? null,
     post_path: postPath.rich_text[0]?.plain_text ?? null
   };
+}
+
+export function toPath(
+  directory: string,
+  createTime: string,
+  title: string
+): string {
+  const yymmdd = createTime.split('T')[0];
+  const hyphenatedTitle = title.replace(/\s/g, '-');
+  const filename = `${yymmdd}-${hyphenatedTitle}.md`;
+
+  return path.join(directory, filename);
+}
+
+export function toTitle(fullPath: string): string {
+  const file = fullPath.split('/').pop() as string;
+  const name = file.split('.')[0];
+  const title = name.split('-').slice(3).join('-');
+
+  return title.replace(/-/g, ' ');
 }

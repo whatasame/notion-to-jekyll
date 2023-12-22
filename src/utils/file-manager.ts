@@ -1,6 +1,7 @@
 import { Page } from '../core/model';
 import * as fs from 'fs-extra';
 import path from 'path';
+import { toPath } from './mapper';
 
 export type SaveResult = {
   page_id: string;
@@ -13,11 +14,8 @@ export async function saveMarkdownAsFile(
   page: Page,
   markdown: string
 ): Promise<SaveResult> {
-  const yymmdd = page.created_time.split('T')[0];
-  const hyphenatedTitle = page.title.trim().replace(/\s/g, '-');
-  const filename = `${yymmdd}-${hyphenatedTitle}.md`;
+  const fullPath = toPath(directory, page.created_time, page.title);
 
-  const fullPath = path.join(directory, filename);
   const data = [generateMetadata(page), markdown].join('\n\n');
 
   await fs.outputFile(fullPath, data, 'utf-8');

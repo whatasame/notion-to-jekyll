@@ -39,7 +39,7 @@ describe('FileManager', () => {
 describe('FileManager with page and markdown', () => {
   const page: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
-    title: ' null sync time ',
+    title: 'null sync time',
     categories: ['infra', 'tools'],
     tags: ['null'],
     created_time: '2023-12-17T15:43:00.000Z',
@@ -73,7 +73,7 @@ This is a test page.
     fs.readFile(uploadedPage.post_path, (_err, data) => {
       expect(data.toString()).toBe(`---
 layout: post
-title:  null sync time 
+title: null sync time
 date: 2023-12-17T15:43:00.000Z
 categories: [infra, tools]
 tags: [null]
