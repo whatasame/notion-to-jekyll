@@ -1,5 +1,7 @@
 # Notion to Jekyll
 
+![logo](https://github.com/whatasame/notion-to-jekyll/assets/97666463/0d42ebeb-fba8-4f6b-a2d1-4b330106157a)
+
 No more exporting and uploading your Notion posts to your Jekyll blog! Automate it with Notion to Jekyll.
 
 Notion to Jekyll is a GitHub action that automatically synchronizes posts written in Notion with Jekyll blogs.
