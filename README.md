@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Notion to Jekyll synchronization
-        uses: whatasame/notion-to-jekyll@v0 # latest version
+        uses: whatasame/notion-to-jekyll@v0.1.0-beta # latest version
         with:
           notion_api_key: ${{ secrets.NOTION_API_KEY }}
           notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
@@ -73,7 +73,7 @@ For example, if you want to change the `post_dir` option, you can write as follo
 
 ```yaml
 - name: Notion to Jekyll synchronization
-  uses: whatasame/notion-to-jekyll@v0
+  uses: whatasame/notion-to-jekyll@v0.1.0-beta
   with:
     notion_api_key: ${{ secrets.NOTION_API_KEY }}
     notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
