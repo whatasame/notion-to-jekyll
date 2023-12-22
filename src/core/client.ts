@@ -5,8 +5,7 @@ import { toPage } from '../utils/mapper';
 import { NotionToMarkdown } from 'notion-to-md';
 import * as core from '@actions/core';
 import path from 'path';
-import { saveMarkdownAsFile } from '../utils/file-manager';
-import { filterNotSynchronized } from '../utils/filter';
+import { saveMarkdownAsFile, SaveResult } from '../utils/file-manager';
 import fs from 'fs';
 
 export interface Options {
@@ -81,16 +80,22 @@ export class NotionToJekyllClient {
     };
   }
 
-  async updatePage(pageId: string, postPath: string): Promise<Page> {
+  async updateSaveResults(results: SaveResult[]): Promise<void> {
+    for (const result of results) {
+      await this.updatePage(result);
+    }
+  }
+
+  async updatePage(result: SaveResult): Promise<Page> {
     const response = await this.#notionClient.pages.update({
-      page_id: pageId,
+      page_id: result.page_id,
       properties: {
         [PROPERTY_NAMES.POST_PATH]: {
           rich_text: [
             {
               type: 'text',
               text: {
-                content: postPath
+                content: result.post_path
               }
             }
           ]
@@ -102,25 +107,26 @@ export class NotionToJekyllClient {
         }
       }
     });
-
     if (!isFullPage(response)) {
       throw new Error('Not a page');
     }
+    console.log(`👻 Synchronized "${result.post_path}"`);
 
     return toPage(response);
   }
 
-  async savePagesAsMarkdown(pages: Pages): Promise<void> {
-    for (const page of filterNotSynchronized(pages)) {
+  async savePagesAsMarkdown(pages: Page[]): Promise<SaveResult[]> {
+    const saveResults: SaveResult[] = [];
+    for (const page of pages) {
       const markdown = await this.getMarkdownAsString(page.id);
 
       const directory = path.join(this.#githubWorkspace, this.#postDir);
       const result = await saveMarkdownAsFile(directory, page, markdown);
-      const updatedPage = await this.updatePage(page.id, result.post_path);
-      console.log(
-        `👻 Synchronized "${updatedPage.title}" to "${updatedPage.post_path}"`
-      );
+      saveResults.push(result);
+      console.log(`📝 Saved to ${result.post_path}`);
     }
+
+    return saveResults;
   }
 
   async getMarkdownAsString(pageId: string): Promise<string> {

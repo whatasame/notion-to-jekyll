@@ -2,7 +2,8 @@ import * as core from '@actions/core';
 import { spawn } from 'node:child_process';
 import path from 'path';
 import { NotionToJekyllClient, Options } from './core/client';
-import { filterNotSynchronized } from './utils/filter';
+import { filterNotSynchronized, filterPathsToDelete } from './utils/filter';
+import { getFilePaths, removeFiles } from './utils/file-manager';
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
@@ -17,19 +18,27 @@ export async function start(): Promise<void> {
   const client = new NotionToJekyllClient(options);
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
-  const pages = await client.getPages();
-  const targets = filterNotSynchronized(pages);
-  if (targets.length === 0) {
-    core.warning('👻 No pages to synchronize.');
-    return;
-  }
 
-  await client.savePagesAsMarkdown(pages);
-  await exec('bash', [path.join(__dirname, '../script/run.sh')], {
-    env: {
-      ...process.env
-    }
-  });
+  const pages = await client.getPages();
+
+  removeFiles(
+    filterPathsToDelete(
+      await getFilePaths(
+        path.join(options.github.workspace, options.github.post_dir),
+        ['.md', '.markdown']
+      ),
+      pages.contents.map(page => page.title)
+    )
+  );
+
+  const pageToSync = filterNotSynchronized(pages);
+  const saveResults = await client.savePagesAsMarkdown(pageToSync);
+
+  // TODO: If there is no page to save or delete, warning code -> warning message list possible?
+  // TODO: Throw error if script exit code is not 0 -> no update
+  execBash(path.join(__dirname, '../scripts/run.sh'));
+
+  await client.updateSaveResults(saveResults);
 }
 
 function importOptions(): Options {
@@ -53,23 +62,19 @@ function importOptions(): Options {
   };
 }
 
-async function exec(
-  cmd: string,
-  args: string[],
-  options: object
-): Promise<number> {
-  return new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, { stdio: 'inherit', ...options });
-    child.on('close', code => {
-      if (code !== 0) {
-        return reject(
-          Object.assign(new Error(`Invalid exit code: ${code}`), { code })
-        );
-      }
+function execBash(script: string): void {
+  const child = spawn('bash', [script]);
 
-      return resolve(code);
-    });
-    child.on('error', reject);
+  child.stdout.on('data', data => {
+    console.log(`[Script] ${data.toString()}`);
+  });
+
+  child.stderr.on('data', data => {
+    console.error(`[Script] error: ${data}`);
+  });
+
+  child.on('close', code => {
+    console.log(`[Script] exited with code ${code}`);
   });
 }
 

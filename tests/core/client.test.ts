@@ -37,10 +37,11 @@ describe('Notion to Jekyll client', () => {
   it('should be able to update page properties', async () => {
     const startTime = new Date().toISOString();
 
-    const page = await client.updatePage(
-      process.env.NOTION_TO_JEKYLL_PAGE_ID as string,
-      '_posts/2023-12-17-same-sync-time.md'
-    );
+    const page = await client.updatePage({
+      page_id: process.env.NOTION_TO_JEKYLL_PAGE_ID as string,
+      synchronized_time: startTime,
+      post_path: '_posts/2023-12-17-same-sync-time.md'
+    });
 
     expect(page.synchronized_time?.localeCompare(startTime)).toBeLessThan(0);
     expect(page.post_path).toEqual('_posts/2023-12-17-same-sync-time.md');

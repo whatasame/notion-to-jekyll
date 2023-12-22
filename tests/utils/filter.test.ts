@@ -1,5 +1,8 @@
 import { Page, Pages } from '../../src/core/model';
-import { filterNotSynchronized } from '../../src/utils/filter';
+import {
+  filterNotSynchronized,
+  filterPathsToDelete
+} from '../../src/utils/filter';
 
 describe('Pages are given', () => {
   const nullSyncTime: Page = {
@@ -53,5 +56,19 @@ describe('Pages are given', () => {
     const filtered: Page[] = filterNotSynchronized(pages);
 
     expect(filtered).toEqual([nullSyncTime, earlierSyncTime]);
+  });
+});
+
+describe('File exist but not exist in pages', () => {
+  const paths = [
+    './_posts/2023-12-17-not-exist-page.md',
+    './_posts/2023-12-17-exist-page.md'
+  ];
+  const titles = ['exist page'];
+
+  it('should return target to delete pages', () => {
+    const target = filterPathsToDelete(paths, titles);
+
+    expect(target).toEqual(['./_posts/2023-12-17-not-exist-page.md']);
   });
 });
