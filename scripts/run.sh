@@ -24,7 +24,7 @@ _commit(){
 
 _push(){
   echo "🚀 Pushing to remote..."
-  git push https://"$INPUT_COMMIT_USERNAME":"$INPUT_GITHUB_TOKEN"@github.com/"$INPUT_REPOSITORY".git || return 1
+  git push -q https://"$INPUT_COMMIT_USERNAME":"$INPUT_GITHUB_TOKEN"@github.com/"$INPUT_REPOSITORY".git || return 1
 }
 
 _main
