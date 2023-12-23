@@ -66,7 +66,6 @@ export class NotionToJekyllClient {
     }
   }
 
-  // TODO: if has_more is true, call getTargetPages recursively
   async getTargetPages(page_size = 100, cursor?: string): Promise<Page[]> {
     const response = await this.#notionClient.databases.query({
       database_id: this.#databaseId,
@@ -74,17 +73,21 @@ export class NotionToJekyllClient {
       start_cursor: cursor
     });
 
-    return response.results
+    const pages = response.results
       .filter(isFullPage)
       .map(toPage)
       .filter(isChecked)
       .filter(isNotSynchronized);
 
-    // return {
-    //   contents: [],
-    //   has_more: response.has_more,
-    //   next_cursor: response.next_cursor
-    // };
+    if (response.has_more) {
+      const nextPages = await this.getTargetPages(
+        page_size,
+        response.next_cursor as string
+      );
+      return [...pages, ...nextPages];
+    }
+
+    return pages;
   }
 
   async updateSaveResults(results: SaveResult[]): Promise<void> {
