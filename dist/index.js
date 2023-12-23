@@ -33759,11 +33759,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.start = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-const node_child_process_1 = __nccwpck_require__(7718);
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const client_1 = __nccwpck_require__(2344);
 const filter_1 = __nccwpck_require__(2284);
 const file_manager_1 = __nccwpck_require__(1277);
+const child_process_1 = __nccwpck_require__(2081);
 const INPUTS = {
     NOTION_API_KEY: 'notion_api_key',
     NOTION_DATABASE_ID: 'notion_database_id',
@@ -33781,8 +33781,6 @@ function start() {
         // TODO: Refactor
         (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), targetPages.map(page => page.title)));
         const saveResults = yield client.savePagesAsMarkdown(targetPages);
-        // TODO: If there is no page to save or delete, warning code -> warning message list possible?
-        // TODO: Throw error if script exit code is not 0 -> no update
         execBash(path_1.default.join(__dirname, '../scripts/run.sh'));
         yield client.updateSaveResults(saveResults);
     });
@@ -33809,16 +33807,20 @@ function importOptions() {
     };
 }
 function execBash(script) {
-    const child = (0, node_child_process_1.spawn)('bash', [script]);
-    child.stdout.on('data', data => {
-        console.log(`[Script] ${data.toString()}`);
-    });
-    child.stderr.on('data', data => {
-        console.error(`[Script] error: ${data}`);
-    });
-    child.on('close', code => {
-        console.log(`[Script] exited with code ${code}`);
-    });
+    var _a;
+    const result = (0, child_process_1.spawnSync)('bash', [script]);
+    if (result.error) {
+        console.error(`[Script] Error during execution: ${result.error.message}`);
+    }
+    if (result.stderr) {
+        console.error(`[Script]: ${result.stderr}`);
+    }
+    console.log(`[Script]: ${result.stdout}`);
+    if (result.status !== 0) {
+        console.error(`[Script]: execution failed with code ${result.status}.`);
+        process.exitCode = (_a = result.status) !== null && _a !== void 0 ? _a : 1;
+    }
+    console.log('[Script]: Script execution completed successfully.');
 }
 // ------- Bootstrap -------
 (() => __awaiter(void 0, void 0, void 0, function* () {
@@ -34105,6 +34107,14 @@ module.exports = require("buffer");
 
 /***/ }),
 
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
+
+/***/ }),
+
 /***/ 6206:
 /***/ ((module) => {
 
@@ -34182,14 +34192,6 @@ module.exports = require("https");
 
 "use strict";
 module.exports = require("net");
-
-/***/ }),
-
-/***/ 7718:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("node:child_process");
 
 /***/ }),
 
