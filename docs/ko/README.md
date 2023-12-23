@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Notion to Jekyll synchronization
-        uses: whatasame/notion-to-jekyll@v0.2.0 # latest version
+        uses: whatasame/notion-to-jekyll@v0 # latest version
         with:
           notion_api_key: ${{ secrets.NOTION_API_KEY }}
           notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
@@ -66,7 +66,7 @@ Notion to Jekyll은 다음과 같은 옵션을 제공합니다.
 
 ```yaml
 - name: Notion to Jekyll synchronization
-  uses: whatasame/notion-to-jekyll@v0.2.0
+  uses: whatasame/notion-to-jekyll@v0
   with:
     notion_api_key: ${{ secrets.NOTION_API_KEY }}
     notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
