@@ -16,11 +16,38 @@ export type Page = {
   post_path: string | null;
 };
 
-export const PROPERTY_NAMES = {
-  CHECKBOX: '[notion-to-jekyll] ready',
-  TITLE: '[notion-to-jekyll] title',
-  CATEGORIES: '[notion-to-jekyll] categories',
-  TAGS: '[notion-to-jekyll] tags',
-  SYNC_TIME: '[notion-to-jekyll] sync time',
-  POST_PATH: '[notion-to-jekyll] post path'
+interface DatabaseProperty {
+  name: string;
+  type: string;
+}
+
+export interface DatabaseProperties {
+  [key: string]: DatabaseProperty;
+}
+
+export const PROPERTIES: DatabaseProperties = {
+  CHECKBOX: {
+    name: '[notion-to-jekyll] ready',
+    type: 'checkbox'
+  },
+  TITLE: {
+    name: '[notion-to-jekyll] title',
+    type: 'title'
+  },
+  CATEGORIES: {
+    name: '[notion-to-jekyll] categories',
+    type: 'multi_select'
+  },
+  TAGS: {
+    name: '[notion-to-jekyll] tags',
+    type: 'multi_select'
+  },
+  SYNC_TIME: {
+    name: '[notion-to-jekyll] sync time',
+    type: 'date'
+  },
+  POST_PATH: {
+    name: '[notion-to-jekyll] post path',
+    type: 'rich_text'
+  }
 };
