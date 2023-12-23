@@ -6,6 +6,7 @@ export type Pages = {
 
 export type Page = {
   id: string;
+  checkbox: boolean;
   title: string;
   categories: string[];
   tags: string[];

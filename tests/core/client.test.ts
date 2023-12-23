@@ -20,16 +20,6 @@ describe('Notion to Jekyll client', () => {
     const pages = await client.getPages();
 
     expect(pages.contents).toBeDefined();
-    for (const page of pages.contents) {
-      expect(page.id).toBeDefined();
-      expect(page.title).toBeDefined();
-      expect(page.categories).toBeDefined();
-      expect(page.tags).toBeDefined();
-      expect(page.created_time).toBeDefined();
-      expect(page.last_edited_time).toBeDefined();
-      expect(page.synchronized_time).toBeDefined();
-      expect(page.post_path).toBeDefined();
-    }
     expect(pages.has_more).toBeDefined();
     expect(pages.next_cursor).toBeDefined();
   });

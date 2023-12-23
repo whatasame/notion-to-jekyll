@@ -1,12 +1,14 @@
 import { Page, Pages } from '../../src/core/model';
 import {
   filterNotSynchronized,
-  filterPathsToDelete
+  filterPathsToDelete,
+  isChecked
 } from '../../src/utils/filter';
 
 describe('Pages are given', () => {
   const nullSyncTime: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
+    checkbox: true,
     title: 'null sync time',
     categories: [],
     tags: [],
@@ -17,6 +19,7 @@ describe('Pages are given', () => {
   };
   const earlierSyncTime: Page = {
     id: 'abcdef01-2345-6789-abcd-ef0123456789',
+    checkbox: false,
     title: 'earlier sync time',
     categories: ['sync', 'time'],
     tags: ['earlier', 'sync', 'time'],
@@ -27,6 +30,7 @@ describe('Pages are given', () => {
   };
   const laterSyncTime: Page = {
     id: 'fedcba09-8765-4321-fedc-ba0987654321',
+    checkbox: true,
     title: 'later sync time',
     categories: ['sync', 'test'],
     tags: ['later', 'sync', 'time'],
@@ -37,6 +41,7 @@ describe('Pages are given', () => {
   };
   const sameSyncTime: Page = {
     id: '98765432-10ef-cdba-9876-543210fedcba',
+    checkbox: false,
     title: 'same sync time',
     categories: ['test', 'time'],
     tags: ['same', 'sync', 'time'],
@@ -56,6 +61,18 @@ describe('Pages are given', () => {
     const filtered: Page[] = filterNotSynchronized(pages);
 
     expect(filtered).toEqual([nullSyncTime, earlierSyncTime]);
+  });
+
+  it('should return pages that is checked', () => {
+    const nullSyncTimeResult = isChecked(nullSyncTime);
+    const earlierSyncTimeResult = isChecked(earlierSyncTime);
+    const laterSyncTimeResult = isChecked(laterSyncTime);
+    const sameSyncTimeResult = isChecked(sameSyncTime);
+
+    expect(nullSyncTimeResult).toEqual(true);
+    expect(earlierSyncTimeResult).toEqual(false);
+    expect(laterSyncTimeResult).toEqual(true);
+    expect(sameSyncTimeResult).toEqual(false);
   });
 });
 

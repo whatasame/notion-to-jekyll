@@ -1,4 +1,5 @@
 import {
+  CheckboxPropertyItemObjectResponse,
   DatePropertyItemObjectResponse,
   MultiSelectPropertyItemObjectResponse,
   RichTextPropertyItemObjectResponse,
@@ -19,6 +20,12 @@ export function validateProperty(
       `Property ${propertyName} is not a ${expectedType} property`
     );
   }
+}
+
+export function isCheckboxProperty(response: {
+  type: string;
+}): response is CheckboxPropertyItemObjectResponse {
+  return response.type === 'checkbox';
 }
 
 export function isTitleProperty(response: {

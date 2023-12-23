@@ -2,6 +2,7 @@ import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { Page, PROPERTY_NAMES } from '../core/model';
 
 import {
+  isCheckboxProperty,
   isDateProperty,
   isMultiSelectProperty,
   isRichTextProperty,
@@ -11,6 +12,13 @@ import path from 'path';
 
 export function toPage(result: PageObjectResponse): Page {
   // TODO: extract
+  const checkbox = result.properties[PROPERTY_NAMES.CHECKBOX];
+  if (!isCheckboxProperty(checkbox)) {
+    throw new Error(
+      `Property ${PROPERTY_NAMES.CHECKBOX} is not a checkbox property`
+    );
+  }
+
   const title = result.properties[PROPERTY_NAMES.TITLE];
   if (!isTitleProperty(title)) {
     throw new Error(`Property ${PROPERTY_NAMES.TITLE} is not a title property`);
@@ -46,6 +54,7 @@ export function toPage(result: PageObjectResponse): Page {
 
   return {
     id: result.id,
+    checkbox: checkbox.checkbox,
     title: title.title[0].plain_text,
     categories: categories.multi_select.map(category => category.name),
     tags: tags.multi_select.map(tag => tag.name),

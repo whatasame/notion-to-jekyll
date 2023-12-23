@@ -23,3 +23,7 @@ export function filterPathsToDelete(
 
   return filtered;
 }
+
+export function isChecked(page: Page): boolean {
+  return page.checkbox;
+}

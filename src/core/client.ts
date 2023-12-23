@@ -7,6 +7,7 @@ import * as core from '@actions/core';
 import path from 'path';
 import { saveMarkdownAsFile, SaveResult } from '../utils/file-manager';
 import fs from 'fs';
+import { isChecked } from '../utils/filter';
 
 export interface Options {
   notion: {
@@ -73,7 +74,11 @@ export class NotionToJekyllClient {
     });
 
     return {
-      contents: response.results.filter(isFullPage).map(toPage),
+      contents: response.results
+        .filter(isFullPage)
+        .map(toPage)
+        .filter(isChecked),
+      // TODO: sync target filter here
       has_more: response.has_more,
       next_cursor: response.next_cursor
     };
