@@ -1,9 +1,9 @@
 import * as core from '@actions/core';
-import { spawn } from 'node:child_process';
 import path from 'path';
 import { NotionToJekyllClient, Options } from './core/client';
 import { filterPathsToDelete } from './utils/filter';
 import { getFilePaths, removeFiles } from './utils/file-manager';
+import { spawnSync } from 'child_process';
 
 const INPUTS = {
   NOTION_API_KEY: 'notion_api_key',
@@ -35,8 +35,6 @@ export async function start(): Promise<void> {
 
   const saveResults = await client.savePagesAsMarkdown(targetPages);
 
-  // TODO: If there is no page to save or delete, warning code -> warning message list possible?
-  // TODO: Throw error if script exit code is not 0 -> no update
   execBash(path.join(__dirname, '../scripts/run.sh'));
 
   await client.updateSaveResults(saveResults);
@@ -64,19 +62,21 @@ function importOptions(): Options {
 }
 
 function execBash(script: string): void {
-  const child = spawn('bash', [script]);
+  const result = spawnSync('bash', [script]);
 
-  child.stdout.on('data', data => {
-    console.log(`[Script] ${data.toString()}`);
-  });
+  if (result.error) {
+    console.error(`[Script] Error during execution: ${result.error.message}`);
+  }
+  if (result.stderr) {
+    console.error(`[Script]: ${result.stderr}`);
+  }
+  console.log(`[Script]: ${result.stdout}`);
 
-  child.stderr.on('data', data => {
-    console.error(`[Script] error: ${data}`);
-  });
-
-  child.on('close', code => {
-    console.log(`[Script] exited with code ${code}`);
-  });
+  if (result.status !== 0) {
+    console.error(`[Script]: execution failed with code ${result.status}.`);
+    process.exitCode = result.status ?? 1;
+  }
+  console.log('[Script]: Script execution completed successfully.');
 }
 
 // ------- Bootstrap -------
