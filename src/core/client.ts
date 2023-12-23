@@ -1,5 +1,5 @@
 import { Client, isFullDatabase, isFullPage, LogLevel } from '@notionhq/client';
-import { Page, Pages, PROPERTY_NAMES } from './model';
+import { Page, PROPERTY_NAMES } from './model';
 import { validateProperty } from '../utils/helper';
 import { toPage } from '../utils/mapper';
 import { NotionToMarkdown } from 'notion-to-md';
@@ -7,7 +7,7 @@ import * as core from '@actions/core';
 import path from 'path';
 import { saveMarkdownAsFile, SaveResult } from '../utils/file-manager';
 import fs from 'fs';
-import { isChecked } from '../utils/filter';
+import { isChecked, isNotSynchronized } from '../utils/filter';
 
 export interface Options {
   notion: {
@@ -66,22 +66,25 @@ export class NotionToJekyllClient {
     }
   }
 
-  async getPages(page_size = 100, cursor?: string): Promise<Pages> {
+  // TODO: if has_more is true, call getTargetPages recursively
+  async getTargetPages(page_size = 100, cursor?: string): Promise<Page[]> {
     const response = await this.#notionClient.databases.query({
       database_id: this.#databaseId,
       page_size,
       start_cursor: cursor
     });
 
-    return {
-      contents: response.results
-        .filter(isFullPage)
-        .map(toPage)
-        .filter(isChecked),
-      // TODO: sync target filter here
-      has_more: response.has_more,
-      next_cursor: response.next_cursor
-    };
+    return response.results
+      .filter(isFullPage)
+      .map(toPage)
+      .filter(isChecked)
+      .filter(isNotSynchronized);
+
+    // return {
+    //   contents: [],
+    //   has_more: response.has_more,
+    //   next_cursor: response.next_cursor
+    // };
   }
 
   async updateSaveResults(results: SaveResult[]): Promise<void> {

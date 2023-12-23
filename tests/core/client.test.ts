@@ -17,11 +17,9 @@ describe('Notion to Jekyll client', () => {
   });
 
   it('should be able to query pages of database', async () => {
-    const pages = await client.getPages();
+    const pages = await client.getTargetPages();
 
-    expect(pages.contents).toBeDefined();
-    expect(pages.has_more).toBeDefined();
-    expect(pages.next_cursor).toBeDefined();
+    expect(pages.length).toBeGreaterThan(0);
   });
 
   it('should be able to update page properties', async () => {

@@ -1,8 +1,8 @@
-import { Page, Pages } from '../../src/core/model';
+import { Page } from '../../src/core/model';
 import {
-  filterNotSynchronized,
   filterPathsToDelete,
-  isChecked
+  isChecked,
+  isNotSynchronized
 } from '../../src/utils/filter';
 
 describe('Pages are given', () => {
@@ -51,28 +51,18 @@ describe('Pages are given', () => {
     post_path: './_posts/2023-12-17-same-sync-time.md'
   };
 
-  const pages: Pages = {
-    contents: [nullSyncTime, earlierSyncTime, laterSyncTime, sameSyncTime],
-    has_more: false,
-    next_cursor: null
-  };
-
   it('should return pages that have not been synchronized', () => {
-    const filtered: Page[] = filterNotSynchronized(pages);
-
-    expect(filtered).toEqual([nullSyncTime, earlierSyncTime]);
+    expect(isNotSynchronized(nullSyncTime)).toEqual(true);
+    expect(isNotSynchronized(earlierSyncTime)).toEqual(true);
+    expect(isNotSynchronized(laterSyncTime)).toEqual(false);
+    expect(isNotSynchronized(sameSyncTime)).toEqual(false);
   });
 
   it('should return pages that is checked', () => {
-    const nullSyncTimeResult = isChecked(nullSyncTime);
-    const earlierSyncTimeResult = isChecked(earlierSyncTime);
-    const laterSyncTimeResult = isChecked(laterSyncTime);
-    const sameSyncTimeResult = isChecked(sameSyncTime);
-
-    expect(nullSyncTimeResult).toEqual(true);
-    expect(earlierSyncTimeResult).toEqual(false);
-    expect(laterSyncTimeResult).toEqual(true);
-    expect(sameSyncTimeResult).toEqual(false);
+    expect(isChecked(nullSyncTime)).toEqual(true);
+    expect(isChecked(earlierSyncTime)).toEqual(false);
+    expect(isChecked(laterSyncTime)).toEqual(true);
+    expect(isChecked(sameSyncTime)).toEqual(false);
   });
 });
 

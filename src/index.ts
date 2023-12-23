@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import { spawn } from 'node:child_process';
 import path from 'path';
 import { NotionToJekyllClient, Options } from './core/client';
-import { filterNotSynchronized, filterPathsToDelete } from './utils/filter';
+import { filterPathsToDelete } from './utils/filter';
 import { getFilePaths, removeFiles } from './utils/file-manager';
 
 const INPUTS = {
@@ -19,20 +19,21 @@ export async function start(): Promise<void> {
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
 
-  const pages = await client.getPages();
+  const targetPages = await client.getTargetPages();
+  console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
 
+  // TODO: Refactor
   removeFiles(
     filterPathsToDelete(
       await getFilePaths(
         path.join(options.github.workspace, options.github.post_dir),
         ['.md', '.markdown']
       ),
-      pages.contents.map(page => page.title)
+      targetPages.map(page => page.title)
     )
   );
 
-  const pageToSync = filterNotSynchronized(pages);
-  const saveResults = await client.savePagesAsMarkdown(pageToSync);
+  const saveResults = await client.savePagesAsMarkdown(targetPages);
 
   // TODO: If there is no page to save or delete, warning code -> warning message list possible?
   // TODO: Throw error if script exit code is not 0 -> no update
