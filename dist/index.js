@@ -33562,7 +33562,7 @@ const notion_to_md_1 = __nccwpck_require__(4377);
 const core = __importStar(__nccwpck_require__(2186));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const file_manager_1 = __nccwpck_require__(1277);
-const fs_1 = __importDefault(__nccwpck_require__(7147));
+const filter_1 = __nccwpck_require__(2284);
 class NotionToJekyllClient {
     constructor(options) {
         _NotionToJekyllClient_notionClient.set(this, void 0);
@@ -33582,39 +33582,39 @@ class NotionToJekyllClient {
         __classPrivateFieldSet(this, _NotionToJekyllClient_githubWorkspace, options.github.workspace, "f");
         __classPrivateFieldSet(this, _NotionToJekyllClient_postDir, options.github.post_dir, "f");
     }
-    // TODO: extract to Validator class
     validateDatabaseProperties() {
         return __awaiter(this, void 0, void 0, function* () {
-            const database = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.retrieve({
+            const db = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.retrieve({
                 database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f")
             });
-            if (!(0, client_1.isFullDatabase)(database)) {
+            if (!(0, client_1.isFullDatabase)(db)) {
                 throw new Error('Not a database');
             }
-            (0, helper_1.validateProperty)(database.properties, model_1.PROPERTY_NAMES.TAGS, 'multi_select');
-            (0, helper_1.validateProperty)(database.properties, model_1.PROPERTY_NAMES.SYNC_TIME, 'date');
-            (0, helper_1.validateProperty)(database.properties, model_1.PROPERTY_NAMES.POST_PATH, 'rich_text');
+            (0, helper_1.validateProperty)(db.properties, model_1.PROPERTIES);
         });
     }
-    // TODO: extract to Validator class
     validatePostDirectory() {
-        const postDirectory = path_1.default.join(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"));
-        if (!fs_1.default.existsSync(postDirectory)) {
+        if (!(0, file_manager_1.isExistPath)(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"))) {
             throw new Error(`⛔️ Post directory "${__classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f")}" does not exist.`);
         }
     }
-    getPages(page_size = 100, cursor) {
+    getTargetPages(page_size = 100, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.query({
                 database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f"),
                 page_size,
                 start_cursor: cursor
             });
-            return {
-                contents: response.results.filter(client_1.isFullPage).map(mapper_1.toPage),
-                has_more: response.has_more,
-                next_cursor: response.next_cursor
-            };
+            const pages = response.results
+                .filter(client_1.isFullPage)
+                .map(mapper_1.toPage)
+                .filter(filter_1.isChecked)
+                .filter(filter_1.isNotSynchronized);
+            if (response.has_more) {
+                const nextPages = yield this.getTargetPages(page_size, response.next_cursor);
+                return [...pages, ...nextPages];
+            }
+            return pages;
         });
     }
     updateSaveResults(results) {
@@ -33629,7 +33629,7 @@ class NotionToJekyllClient {
             const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").pages.update({
                 page_id: result.page_id,
                 properties: {
-                    [model_1.PROPERTY_NAMES.POST_PATH]: {
+                    [model_1.PROPERTIES.POST_PATH.name]: {
                         rich_text: [
                             {
                                 type: 'text',
@@ -33639,7 +33639,7 @@ class NotionToJekyllClient {
                             }
                         ]
                     },
-                    [model_1.PROPERTY_NAMES.SYNC_TIME]: {
+                    [model_1.PROPERTIES.SYNC_TIME.name]: {
                         date: {
                             start: new Date().toISOString()
                         }
@@ -33685,13 +33685,32 @@ _NotionToJekyllClient_notionClient = new WeakMap(), _NotionToJekyllClient_n2mCli
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PROPERTY_NAMES = void 0;
-exports.PROPERTY_NAMES = {
-    TITLE: '[notion-to-jekyll] title',
-    CATEGORIES: '[notion-to-jekyll] categories',
-    TAGS: '[notion-to-jekyll] tags',
-    SYNC_TIME: '[notion-to-jekyll] sync time',
-    POST_PATH: '[notion-to-jekyll] post path'
+exports.PROPERTIES = void 0;
+exports.PROPERTIES = {
+    CHECKBOX: {
+        name: '[notion-to-jekyll] ready',
+        type: 'checkbox'
+    },
+    TITLE: {
+        name: '[notion-to-jekyll] title',
+        type: 'title'
+    },
+    CATEGORIES: {
+        name: '[notion-to-jekyll] categories',
+        type: 'multi_select'
+    },
+    TAGS: {
+        name: '[notion-to-jekyll] tags',
+        type: 'multi_select'
+    },
+    SYNC_TIME: {
+        name: '[notion-to-jekyll] sync time',
+        type: 'date'
+    },
+    POST_PATH: {
+        name: '[notion-to-jekyll] post path',
+        type: 'rich_text'
+    }
 };
 
 
@@ -33757,10 +33776,11 @@ function start() {
         const client = new client_1.NotionToJekyllClient(options);
         client.validatePostDirectory();
         yield client.validateDatabaseProperties();
-        const pages = yield client.getPages();
-        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), pages.contents.map(page => page.title)));
-        const pageToSync = (0, filter_1.filterNotSynchronized)(pages);
-        const saveResults = yield client.savePagesAsMarkdown(pageToSync);
+        const targetPages = yield client.getTargetPages();
+        console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
+        // TODO: Refactor
+        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), targetPages.map(page => page.title)));
+        const saveResults = yield client.savePagesAsMarkdown(targetPages);
         // TODO: If there is no page to save or delete, warning code -> warning message list possible?
         // TODO: Throw error if script exit code is not 0 -> no update
         execBash(path_1.default.join(__dirname, '../scripts/run.sh'));
@@ -33854,7 +33874,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.removeFiles = exports.getFilePaths = exports.saveMarkdownAsFile = void 0;
+exports.isExistPath = exports.removeFiles = exports.getFilePaths = exports.saveMarkdownAsFile = void 0;
 const fs = __importStar(__nccwpck_require__(5630));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const mapper_1 = __nccwpck_require__(3082);
@@ -33902,6 +33922,10 @@ function removeFiles(strings) {
     }
 }
 exports.removeFiles = removeFiles;
+function isExistPath(...paths) {
+    return fs.existsSync(path_1.default.join(...paths));
+}
+exports.isExistPath = isExistPath;
 
 
 /***/ }),
@@ -33912,15 +33936,17 @@ exports.removeFiles = removeFiles;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.filterPathsToDelete = exports.filterNotSynchronized = void 0;
+exports.filterPathsToDelete = exports.isNotSynchronized = exports.isChecked = void 0;
 const mapper_1 = __nccwpck_require__(3082);
-function filterNotSynchronized(pages) {
-    const filtered = pages.contents.filter(page => page.synchronized_time === null ||
-        new Date(page.synchronized_time) < new Date(page.last_edited_time));
-    console.log(`📝 Found ${filtered.length} pages to synchronize.`);
-    return filtered;
+function isChecked(page) {
+    return page.checkbox;
 }
-exports.filterNotSynchronized = filterNotSynchronized;
+exports.isChecked = isChecked;
+function isNotSynchronized(page) {
+    return (page.synchronized_time === null ||
+        new Date(page.synchronized_time) < new Date(page.last_edited_time));
+}
+exports.isNotSynchronized = isNotSynchronized;
 function filterPathsToDelete(paths, titles) {
     const titleSet = new Set(titles);
     const filtered = paths.filter(path => !titleSet.has((0, mapper_1.toTitle)(path)));
@@ -33938,16 +33964,24 @@ exports.filterPathsToDelete = filterPathsToDelete;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isRichTextProperty = exports.isDateProperty = exports.isMultiSelectProperty = exports.isTitleProperty = exports.validateProperty = void 0;
-function validateProperty(properties, propertyName, expectedType) {
-    if (!properties[propertyName]) {
-        throw new Error(`Property ${propertyName} is not defined`);
-    }
-    if (properties[propertyName].type !== expectedType) {
-        throw new Error(`Property ${propertyName} is not a ${expectedType} property`);
+exports.isRichTextProperty = exports.isDateProperty = exports.isMultiSelectProperty = exports.isTitleProperty = exports.isCheckboxProperty = exports.validateProperty = void 0;
+function validateProperty(target, properties) {
+    for (const key in properties) {
+        const propertyName = properties[key].name;
+        if (!target[propertyName]) {
+            throw new Error(`Property ${propertyName} is not found`);
+        }
+        const propertyType = properties[key].type;
+        if (target[propertyName].type !== propertyType) {
+            throw new Error(`Property ${key} is not ${propertyType}`);
+        }
     }
 }
 exports.validateProperty = validateProperty;
+function isCheckboxProperty(response) {
+    return response.type === 'checkbox';
+}
+exports.isCheckboxProperty = isCheckboxProperty;
 function isTitleProperty(response) {
     return response.type === 'title';
 }
@@ -33984,28 +34018,33 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 function toPage(result) {
     var _a, _b, _c, _d;
     // TODO: extract
-    const title = result.properties[model_1.PROPERTY_NAMES.TITLE];
+    const checkbox = result.properties[model_1.PROPERTIES.CHECKBOX.name];
+    if (!(0, helper_1.isCheckboxProperty)(checkbox)) {
+        throw new Error(`Property ${model_1.PROPERTIES.CHECKBOX.name} is not a ${model_1.PROPERTIES.CHECKBOX.type} property`);
+    }
+    const title = result.properties[model_1.PROPERTIES.TITLE.name];
     if (!(0, helper_1.isTitleProperty)(title)) {
-        throw new Error(`Property ${model_1.PROPERTY_NAMES.TITLE} is not a title property`);
+        throw new Error(`Property ${model_1.PROPERTIES.TITLE.name} is not a ${model_1.PROPERTIES.TITLE.type} property`);
     }
-    const tags = result.properties[model_1.PROPERTY_NAMES.TAGS];
+    const tags = result.properties[model_1.PROPERTIES.TAGS.name];
     if (!(0, helper_1.isMultiSelectProperty)(tags)) {
-        throw new Error(`Property ${model_1.PROPERTY_NAMES.TAGS} is not a multi_select property`);
+        throw new Error(`Property ${model_1.PROPERTIES.TAGS.name} is not a ${model_1.PROPERTIES.TAGS.type} property`);
     }
-    const categories = result.properties[model_1.PROPERTY_NAMES.CATEGORIES];
+    const categories = result.properties[model_1.PROPERTIES.CATEGORIES.name];
     if (!(0, helper_1.isMultiSelectProperty)(categories)) {
-        throw new Error(`Property ${model_1.PROPERTY_NAMES.CATEGORIES} is not a multi_select property`);
+        throw new Error(`Property ${model_1.PROPERTIES.CATEGORIES.name} is not a ${model_1.PROPERTIES.CATEGORIES.type} property`);
     }
-    const synchronizedTime = result.properties[model_1.PROPERTY_NAMES.SYNC_TIME];
+    const synchronizedTime = result.properties[model_1.PROPERTIES.SYNC_TIME.name];
     if (!(0, helper_1.isDateProperty)(synchronizedTime)) {
-        throw new Error(`Property ${model_1.PROPERTY_NAMES.SYNC_TIME} is not a date property`);
+        throw new Error(`Property ${model_1.PROPERTIES.SYNC_TIME.name} is not a ${model_1.PROPERTIES.SYNC_TIME.type} property`);
     }
-    const postPath = result.properties[model_1.PROPERTY_NAMES.POST_PATH];
+    const postPath = result.properties[model_1.PROPERTIES.POST_PATH.name];
     if (!(0, helper_1.isRichTextProperty)(postPath)) {
-        throw new Error(`Property ${model_1.PROPERTY_NAMES.POST_PATH} is not a rich_text property`);
+        throw new Error(`Property ${model_1.PROPERTIES.POST_PATH.name} is not a ${model_1.PROPERTIES.POST_PATH.type} property`);
     }
     return {
         id: result.id,
+        checkbox: checkbox.checkbox,
         title: title.title[0].plain_text,
         categories: categories.multi_select.map(category => category.name),
         tags: tags.multi_select.map(tag => tag.name),
