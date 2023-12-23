@@ -39,6 +39,7 @@ describe('FileManager', () => {
 describe('FileManager with page and markdown', () => {
   const page: Page = {
     id: '12345678-9abc-def0-1234-56789abcdef0',
+    checkbox: true,
     title: 'null sync time',
     categories: ['infra', 'tools'],
     tags: ['null'],

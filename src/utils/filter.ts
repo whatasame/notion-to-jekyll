@@ -1,15 +1,15 @@
-import { Page, Pages } from '../core/model';
+import { Page } from '../core/model';
 import { toTitle } from './mapper';
 
-export function filterNotSynchronized(pages: Pages): Page[] {
-  const filtered = pages.contents.filter(
-    page =>
-      page.synchronized_time === null ||
-      new Date(page.synchronized_time) < new Date(page.last_edited_time)
-  );
-  console.log(`📝 Found ${filtered.length} pages to synchronize.`);
+export function isChecked(page: Page): boolean {
+  return page.checkbox;
+}
 
-  return filtered;
+export function isNotSynchronized(page: Page): boolean {
+  return (
+    page.synchronized_time === null ||
+    new Date(page.synchronized_time) < new Date(page.last_edited_time)
+  );
 }
 
 export function filterPathsToDelete(

@@ -6,6 +6,7 @@ export type Pages = {
 
 export type Page = {
   id: string;
+  checkbox: boolean;
   title: string;
   categories: string[];
   tags: string[];
@@ -16,6 +17,7 @@ export type Page = {
 };
 
 export const PROPERTY_NAMES = {
+  CHECKBOX: '[notion-to-jekyll] ready',
   TITLE: '[notion-to-jekyll] title',
   CATEGORIES: '[notion-to-jekyll] categories',
   TAGS: '[notion-to-jekyll] tags',
