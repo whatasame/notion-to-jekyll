@@ -15,38 +15,37 @@ export function toPage(result: PageObjectResponse): Page {
   const checkbox = result.properties[PROPERTIES.CHECKBOX.name];
   if (!isCheckboxProperty(checkbox)) {
     throw new Error(
-      `Property ${PROPERTIES.CHECKBOX} is not a checkbox property`
+      `Property ${PROPERTIES.CHECKBOX.name} is not a ${PROPERTIES.CHECKBOX.type} property`
     );
   }
-
   const title = result.properties[PROPERTIES.TITLE.name];
   if (!isTitleProperty(title)) {
-    throw new Error(`Property ${PROPERTIES.TITLE} is not a title property`);
+    throw new Error(
+      `Property ${PROPERTIES.TITLE.name} is not a ${PROPERTIES.TITLE.type} property`
+    );
   }
-
   const tags = result.properties[PROPERTIES.TAGS.name];
   if (!isMultiSelectProperty(tags)) {
     throw new Error(
-      `Property ${PROPERTIES.TAGS} is not a multi_select property`
+      `Property ${PROPERTIES.TAGS.name} is not a ${PROPERTIES.TAGS.type} property`
     );
   }
-
   const categories = result.properties[PROPERTIES.CATEGORIES.name];
   if (!isMultiSelectProperty(categories)) {
     throw new Error(
-      `Property ${PROPERTIES.CATEGORIES} is not a multi_select property`
+      `Property ${PROPERTIES.CATEGORIES.name} is not a ${PROPERTIES.CATEGORIES.type} property`
     );
   }
-
   const synchronizedTime = result.properties[PROPERTIES.SYNC_TIME.name];
   if (!isDateProperty(synchronizedTime)) {
-    throw new Error(`Property ${PROPERTIES.SYNC_TIME} is not a date property`);
+    throw new Error(
+      `Property ${PROPERTIES.SYNC_TIME.name} is not a ${PROPERTIES.SYNC_TIME.type} property`
+    );
   }
-
   const postPath = result.properties[PROPERTIES.POST_PATH.name];
   if (!isRichTextProperty(postPath)) {
     throw new Error(
-      `Property ${PROPERTIES.POST_PATH} is not a rich_text property`
+      `Property ${PROPERTIES.POST_PATH.name} is not a ${PROPERTIES.POST_PATH.type} property`
     );
   }
 
