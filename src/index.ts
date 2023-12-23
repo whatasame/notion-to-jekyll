@@ -66,18 +66,20 @@ function execBash(script: string): void {
   const result = spawnSync('bash', [script]);
 
   if (result.error) {
-    console.error(`[Script] Error during execution: ${result.error.message}`);
+    console.error(`Error during shell execution: ${result.error.message}`);
   }
   if (result.stderr) {
-    console.error(`[Script]: ${result.stderr}`);
+    console.error(`error: ${result.stderr}`);
   }
-  console.log(`[Script]: ${result.stdout}`);
+  if (result.stdout) {
+    console.log(`${result.stdout}`);
+  }
 
   if (result.status !== 0) {
-    console.error(`[Script]: execution failed with code ${result.status}.`);
-    process.exitCode = result.status ?? 1;
+    console.error(`Execution failed with code ${result.status}.`);
+    process.exit(result.status ?? 1);
   }
-  console.log('[Script]: Script execution completed successfully.');
+  console.log('Script execution completed successfully.');
 }
 
 // ------- Bootstrap -------
