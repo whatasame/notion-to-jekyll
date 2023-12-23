@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import path from 'path';
 import { NotionToJekyllClient, Options } from './core/client';
-import { filterPathsToDelete } from './utils/filter';
+import { filterPathsToDelete, isNotSynchronized } from './utils/filter';
 import { getFilePaths, removeFiles } from './utils/file-manager';
 import { spawnSync } from 'child_process';
 
@@ -19,8 +19,7 @@ export async function start(): Promise<void> {
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
 
-  const targetPages = await client.getTargetPages();
-  console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
+  const checkedPages = await client.getCheckedPages();
 
   // TODO: Refactor
   removeFiles(
@@ -29,10 +28,12 @@ export async function start(): Promise<void> {
         path.join(options.github.workspace, options.github.post_dir),
         ['.md', '.markdown']
       ),
-      targetPages.map(page => page.title)
+      checkedPages.map(page => page.title)
     )
   );
 
+  const targetPages = checkedPages.filter(isNotSynchronized);
+  console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
   const saveResults = await client.savePagesAsMarkdown(targetPages);
 
   execBash(path.join(__dirname, '../scripts/run.sh'));
@@ -65,18 +66,20 @@ function execBash(script: string): void {
   const result = spawnSync('bash', [script]);
 
   if (result.error) {
-    console.error(`[Script] Error during execution: ${result.error.message}`);
+    console.error(`Error during shell execution: ${result.error.message}`);
   }
   if (result.stderr) {
-    console.error(`[Script]: ${result.stderr}`);
+    console.error(`error: ${result.stderr}`);
   }
-  console.log(`[Script]: ${result.stdout}`);
+  if (result.stdout) {
+    console.log(`${result.stdout}`);
+  }
 
   if (result.status !== 0) {
-    console.error(`[Script]: execution failed with code ${result.status}.`);
-    process.exitCode = result.status ?? 1;
+    console.error(`Execution failed with code ${result.status}.`);
+    process.exit(result.status ?? 1);
   }
-  console.log('[Script]: Script execution completed successfully.');
+  console.log('Script execution completed successfully.');
 }
 
 // ------- Bootstrap -------

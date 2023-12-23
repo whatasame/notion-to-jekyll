@@ -10,7 +10,7 @@ import {
   saveMarkdownAsFile,
   SaveResult
 } from '../utils/file-manager';
-import { isChecked, isNotSynchronized } from '../utils/filter';
+import { isChecked } from '../utils/filter';
 
 export interface Options {
   notion: {
@@ -61,7 +61,7 @@ export class NotionToJekyllClient {
     }
   }
 
-  async getTargetPages(page_size = 100, cursor?: string): Promise<Page[]> {
+  async getCheckedPages(page_size = 100, cursor?: string): Promise<Page[]> {
     const response = await this.#notionClient.databases.query({
       database_id: this.#databaseId,
       page_size,
@@ -71,11 +71,10 @@ export class NotionToJekyllClient {
     const pages = response.results
       .filter(isFullPage)
       .map(toPage)
-      .filter(isChecked)
-      .filter(isNotSynchronized);
+      .filter(isChecked);
 
     if (response.has_more) {
-      const nextPages = await this.getTargetPages(
+      const nextPages = await this.getCheckedPages(
         page_size,
         response.next_cursor as string
       );

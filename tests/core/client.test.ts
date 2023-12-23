@@ -17,13 +17,13 @@ describe('Notion to Jekyll client', () => {
   });
 
   it('should be able to query pages of database', async () => {
-    const pages = await client.getTargetPages();
+    const pages = await client.getCheckedPages();
 
     expect(pages.length).toBeGreaterThan(0);
   });
 
   it('should be able to recursively query pages of database if has_more is true', async () => {
-    const pages = await client.getTargetPages(1);
+    const pages = await client.getCheckedPages(1);
 
     expect(pages.length).toBeGreaterThan(1);
   });
