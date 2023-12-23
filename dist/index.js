@@ -33598,7 +33598,7 @@ class NotionToJekyllClient {
             throw new Error(`⛔️ Post directory "${__classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f")}" does not exist.`);
         }
     }
-    getTargetPages(page_size = 100, cursor) {
+    getCheckedPages(page_size = 100, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.query({
                 database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f"),
@@ -33608,10 +33608,9 @@ class NotionToJekyllClient {
             const pages = response.results
                 .filter(client_1.isFullPage)
                 .map(mapper_1.toPage)
-                .filter(filter_1.isChecked)
-                .filter(filter_1.isNotSynchronized);
+                .filter(filter_1.isChecked);
             if (response.has_more) {
-                const nextPages = yield this.getTargetPages(page_size, response.next_cursor);
+                const nextPages = yield this.getCheckedPages(page_size, response.next_cursor);
                 return [...pages, ...nextPages];
             }
             return pages;
@@ -33776,10 +33775,11 @@ function start() {
         const client = new client_1.NotionToJekyllClient(options);
         client.validatePostDirectory();
         yield client.validateDatabaseProperties();
-        const targetPages = yield client.getTargetPages();
-        console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
+        const checkedPages = yield client.getCheckedPages();
         // TODO: Refactor
-        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), targetPages.map(page => page.title)));
+        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), checkedPages.map(page => page.title)));
+        const targetPages = checkedPages.filter(filter_1.isNotSynchronized);
+        console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
         const saveResults = yield client.savePagesAsMarkdown(targetPages);
         execBash(path_1.default.join(__dirname, '../scripts/run.sh'));
         yield client.updateSaveResults(saveResults);
@@ -33810,17 +33810,19 @@ function execBash(script) {
     var _a;
     const result = (0, child_process_1.spawnSync)('bash', [script]);
     if (result.error) {
-        console.error(`[Script] Error during execution: ${result.error.message}`);
+        console.error(`Error during shell execution: ${result.error.message}`);
     }
     if (result.stderr) {
-        console.error(`[Script]: ${result.stderr}`);
+        console.error(`error: ${result.stderr}`);
     }
-    console.log(`[Script]: ${result.stdout}`);
+    if (result.stdout) {
+        console.log(`${result.stdout}`);
+    }
     if (result.status !== 0) {
-        console.error(`[Script]: execution failed with code ${result.status}.`);
-        process.exitCode = (_a = result.status) !== null && _a !== void 0 ? _a : 1;
+        console.error(`Execution failed with code ${result.status}.`);
+        process.exit((_a = result.status) !== null && _a !== void 0 ? _a : 1);
     }
-    console.log('[Script]: Script execution completed successfully.');
+    console.log('Script execution completed successfully.');
 }
 // ------- Bootstrap -------
 (() => __awaiter(void 0, void 0, void 0, function* () {
