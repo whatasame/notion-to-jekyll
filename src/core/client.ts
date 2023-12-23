@@ -42,20 +42,19 @@ export class NotionToJekyllClient {
 
   // TODO: extract to Validator class
   async validateDatabaseProperties(): Promise<void> {
-    const database = await this.#notionClient.databases.retrieve({
+    const db = await this.#notionClient.databases.retrieve({
       database_id: this.#databaseId
     });
-    if (!isFullDatabase(database)) {
+    if (!isFullDatabase(db)) {
       throw new Error('Not a database');
     }
 
-    validateProperty(database.properties, PROPERTY_NAMES.TAGS, 'multi_select');
-    validateProperty(database.properties, PROPERTY_NAMES.SYNC_TIME, 'date');
-    validateProperty(
-      database.properties,
-      PROPERTY_NAMES.POST_PATH,
-      'rich_text'
-    );
+    validateProperty(db.properties, PROPERTY_NAMES.CHECKBOX, 'checkbox');
+    validateProperty(db.properties, PROPERTY_NAMES.TITLE, 'title');
+    validateProperty(db.properties, PROPERTY_NAMES.CATEGORIES, 'multi_select');
+    validateProperty(db.properties, PROPERTY_NAMES.TAGS, 'multi_select');
+    validateProperty(db.properties, PROPERTY_NAMES.SYNC_TIME, 'date');
+    validateProperty(db.properties, PROPERTY_NAMES.POST_PATH, 'rich_text');
   }
 
   // TODO: extract to Validator class

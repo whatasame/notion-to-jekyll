@@ -16,6 +16,7 @@ export type Page = {
 };
 
 export const PROPERTY_NAMES = {
+  CHECKBOX: '[notion-to-jekyll] ready',
   TITLE: '[notion-to-jekyll] title',
   CATEGORIES: '[notion-to-jekyll] categories',
   TAGS: '[notion-to-jekyll] tags',
