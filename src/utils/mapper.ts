@@ -1,5 +1,5 @@
 import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-import { Page, PROPERTY_NAMES } from '../core/model';
+import { Page, PROPERTIES } from '../core/model';
 
 import {
   isCheckboxProperty,
@@ -12,43 +12,41 @@ import path from 'path';
 
 export function toPage(result: PageObjectResponse): Page {
   // TODO: extract
-  const checkbox = result.properties[PROPERTY_NAMES.CHECKBOX];
+  const checkbox = result.properties[PROPERTIES.CHECKBOX.name];
   if (!isCheckboxProperty(checkbox)) {
     throw new Error(
-      `Property ${PROPERTY_NAMES.CHECKBOX} is not a checkbox property`
+      `Property ${PROPERTIES.CHECKBOX} is not a checkbox property`
     );
   }
 
-  const title = result.properties[PROPERTY_NAMES.TITLE];
+  const title = result.properties[PROPERTIES.TITLE.name];
   if (!isTitleProperty(title)) {
-    throw new Error(`Property ${PROPERTY_NAMES.TITLE} is not a title property`);
+    throw new Error(`Property ${PROPERTIES.TITLE} is not a title property`);
   }
 
-  const tags = result.properties[PROPERTY_NAMES.TAGS];
+  const tags = result.properties[PROPERTIES.TAGS.name];
   if (!isMultiSelectProperty(tags)) {
     throw new Error(
-      `Property ${PROPERTY_NAMES.TAGS} is not a multi_select property`
+      `Property ${PROPERTIES.TAGS} is not a multi_select property`
     );
   }
 
-  const categories = result.properties[PROPERTY_NAMES.CATEGORIES];
+  const categories = result.properties[PROPERTIES.CATEGORIES.name];
   if (!isMultiSelectProperty(categories)) {
     throw new Error(
-      `Property ${PROPERTY_NAMES.CATEGORIES} is not a multi_select property`
+      `Property ${PROPERTIES.CATEGORIES} is not a multi_select property`
     );
   }
 
-  const synchronizedTime = result.properties[PROPERTY_NAMES.SYNC_TIME];
+  const synchronizedTime = result.properties[PROPERTIES.SYNC_TIME.name];
   if (!isDateProperty(synchronizedTime)) {
-    throw new Error(
-      `Property ${PROPERTY_NAMES.SYNC_TIME} is not a date property`
-    );
+    throw new Error(`Property ${PROPERTIES.SYNC_TIME} is not a date property`);
   }
 
-  const postPath = result.properties[PROPERTY_NAMES.POST_PATH];
+  const postPath = result.properties[PROPERTIES.POST_PATH.name];
   if (!isRichTextProperty(postPath)) {
     throw new Error(
-      `Property ${PROPERTY_NAMES.POST_PATH} is not a rich_text property`
+      `Property ${PROPERTIES.POST_PATH} is not a rich_text property`
     );
   }
 

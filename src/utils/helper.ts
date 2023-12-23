@@ -5,20 +5,22 @@ import {
   RichTextPropertyItemObjectResponse,
   TitlePropertyItemObjectResponse
 } from '@notionhq/client/build/src/api-endpoints';
+import { DatabaseProperties } from '../core/model';
 
 export function validateProperty(
-  properties: Record<string, { type: string }>,
-  propertyName: string,
-  expectedType: string
+  target: Record<string, { type: string }>,
+  properties: DatabaseProperties
 ): void {
-  if (!properties[propertyName]) {
-    throw new Error(`Property ${propertyName} is not defined`);
-  }
+  for (const key in properties) {
+    const propertyName = properties[key].name;
+    if (!target[propertyName]) {
+      throw new Error(`Property ${propertyName} is not found`);
+    }
 
-  if (properties[propertyName].type !== expectedType) {
-    throw new Error(
-      `Property ${propertyName} is not a ${expectedType} property`
-    );
+    const propertyType = properties[key].type;
+    if (target[propertyName].type !== propertyType) {
+      throw new Error(`Property ${key} is not ${propertyType}`);
+    }
   }
 }
 

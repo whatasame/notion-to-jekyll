@@ -1,5 +1,5 @@
 import { Client, isFullDatabase, isFullPage, LogLevel } from '@notionhq/client';
-import { Page, PROPERTY_NAMES } from './model';
+import { Page, PROPERTIES } from './model';
 import { validateProperty } from '../utils/helper';
 import { toPage } from '../utils/mapper';
 import { NotionToMarkdown } from 'notion-to-md';
@@ -44,7 +44,6 @@ export class NotionToJekyllClient {
     this.#postDir = options.github.post_dir;
   }
 
-  // TODO: extract to Validator class
   async validateDatabaseProperties(): Promise<void> {
     const db = await this.#notionClient.databases.retrieve({
       database_id: this.#databaseId
@@ -53,12 +52,7 @@ export class NotionToJekyllClient {
       throw new Error('Not a database');
     }
 
-    validateProperty(db.properties, PROPERTY_NAMES.CHECKBOX, 'checkbox');
-    validateProperty(db.properties, PROPERTY_NAMES.TITLE, 'title');
-    validateProperty(db.properties, PROPERTY_NAMES.CATEGORIES, 'multi_select');
-    validateProperty(db.properties, PROPERTY_NAMES.TAGS, 'multi_select');
-    validateProperty(db.properties, PROPERTY_NAMES.SYNC_TIME, 'date');
-    validateProperty(db.properties, PROPERTY_NAMES.POST_PATH, 'rich_text');
+    validateProperty(db.properties, PROPERTIES);
   }
 
   validatePostDirectory(): void {
@@ -101,7 +95,7 @@ export class NotionToJekyllClient {
     const response = await this.#notionClient.pages.update({
       page_id: result.page_id,
       properties: {
-        [PROPERTY_NAMES.POST_PATH]: {
+        [PROPERTIES.POST_PATH.name]: {
           rich_text: [
             {
               type: 'text',
@@ -111,7 +105,7 @@ export class NotionToJekyllClient {
             }
           ]
         },
-        [PROPERTY_NAMES.SYNC_TIME]: {
+        [PROPERTIES.SYNC_TIME.name]: {
           date: {
             start: new Date().toISOString()
           }
