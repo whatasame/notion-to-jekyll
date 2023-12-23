@@ -1,6 +1,7 @@
 import { Page } from '../../src/core/model';
 import {
   getFilePaths,
+  isExistPath,
   removeFiles,
   saveMarkdownAsFile
 } from '../../src/utils/file-manager';
@@ -33,6 +34,11 @@ describe('FileManager', () => {
     removeFiles(await getFilePaths(directory, ['.md']));
 
     expect(await getFilePaths(directory, ['.md'])).toEqual([]);
+  });
+
+  it('should check if path exists', async () => {
+    expect(isExistPath(directory)).toBeTruthy();
+    expect(isExistPath(directory, 'weird_dir')).not.toBeTruthy();
   });
 });
 

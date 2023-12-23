@@ -5,8 +5,11 @@ import { toPage } from '../utils/mapper';
 import { NotionToMarkdown } from 'notion-to-md';
 import * as core from '@actions/core';
 import path from 'path';
-import { saveMarkdownAsFile, SaveResult } from '../utils/file-manager';
-import fs from 'fs';
+import {
+  isExistPath,
+  saveMarkdownAsFile,
+  SaveResult
+} from '../utils/file-manager';
 import { isChecked, isNotSynchronized } from '../utils/filter';
 
 export interface Options {
@@ -58,10 +61,8 @@ export class NotionToJekyllClient {
     validateProperty(db.properties, PROPERTY_NAMES.POST_PATH, 'rich_text');
   }
 
-  // TODO: extract to Validator class
   validatePostDirectory(): void {
-    const postDirectory = path.join(this.#githubWorkspace, this.#postDir);
-    if (!fs.existsSync(postDirectory)) {
+    if (!isExistPath(this.#githubWorkspace, this.#postDir)) {
       throw new Error(`⛔️ Post directory "${this.#postDir}" does not exist.`);
     }
   }

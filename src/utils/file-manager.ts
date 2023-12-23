@@ -61,3 +61,7 @@ export function removeFiles(strings: string[]): void {
     console.log(`🗑 Removed ${string}`);
   }
 }
+
+export function isExistPath(...paths: string[]): boolean {
+  return fs.existsSync(path.join(...paths));
+}
