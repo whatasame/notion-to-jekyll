@@ -73,7 +73,8 @@ This is a test page.
     fs.readFile(uploadedPage.post_path, (_err, data) => {
       expect(data.toString()).toBe(`---
 layout: post
-title: null sync time
+title: |
+    null sync time
 date: 2023-12-17T15:43:00.000Z
 categories: [infra, tools]
 tags: [null]

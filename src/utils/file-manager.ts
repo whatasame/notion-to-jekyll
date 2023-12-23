@@ -31,7 +31,7 @@ function generateMetadata(page: Page): string {
   const metadataLines = [
     '---',
     'layout: post',
-    `title: ${page.title}`,
+    `title: |\n    ${page.title}`,
     `date: ${page.created_time}`,
     `categories: [${page.categories.join(', ')}]`,
     `tags: [${page.tags.join(', ')}]`,
