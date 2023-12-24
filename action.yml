@@ -1,9 +1,9 @@
 name: "Notion to Jekyll"
-description: "Synchronize Notion to Jekyll"
+description: "GitHub action for synchronizing Notion to Jekyll"
 author: "whatasame"
 
 branding:
-  icon: "heart"
+  icon: "upload-cloud"
   color: "red"
 
 inputs:
