@@ -27,27 +27,27 @@ export interface DatabaseProperties {
 
 export const PROPERTIES: DatabaseProperties = {
   CHECKBOX: {
-    name: '[notion-to-jekyll] ready',
+    name: 'Ready',
     type: 'checkbox'
   },
   TITLE: {
-    name: '[notion-to-jekyll] title',
+    name: 'Title',
     type: 'title'
   },
   CATEGORIES: {
-    name: '[notion-to-jekyll] categories',
+    name: 'Categories',
     type: 'multi_select'
   },
   TAGS: {
-    name: '[notion-to-jekyll] tags',
+    name: 'Tags',
     type: 'multi_select'
   },
   SYNC_TIME: {
-    name: '[notion-to-jekyll] sync time',
+    name: 'Sync time',
     type: 'date'
   },
   POST_PATH: {
-    name: '[notion-to-jekyll] post path',
+    name: 'Post path',
     type: 'rich_text'
   }
 };
