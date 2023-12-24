@@ -21,12 +21,12 @@ Notion to Jekyll 템플릿은 다음과 같은 속성을 가지고 있습니다.
 
 | 속성 이름                           | 속성 타입 | 설명        |
 |---------------------------------|-------|-----------|
-| `[notion-to-jekyll] ready`      | 체크박스  | 동기화 여부    |
-| `[notion-to-jekyll] title`      | 제목    | 글의 제목     |
-| `[notion-to-jekyll] tags`       | 다중 선택 | 글의 태그     |
-| `[notion-to-jekyll] categories` | 다중 선택 | 글의 카테고리   |
-| `[notion-to-jekyll] sync time`  | 날짜    | 글의 동기화 시간 |
-| `[notion-to-jekyll] post path`  | 텍스트   | 글의 경로     |
+| `Ready`      | 체크박스  | 동기화 여부    |
+| `Title`      | 제목    | 글의 제목     |
+| `Tags`       | 다중 선택 | 글의 태그     |
+| `Categories` | 다중 선택 | 글의 카테고리   |
+| `Sync time`  | 날짜    | 글의 동기화 시간 |
+| `Post path`  | 텍스트   | 글의 경로     |
 
 > [!CAUTION]
 >

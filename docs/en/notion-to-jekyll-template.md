@@ -21,12 +21,12 @@ Notion to Jekyll template has the following properties.
 
 | Property name                   | Property type | Description     |
 |---------------------------------|---------------|-----------------|
-| `[notion-to-jekyll] ready`      | Checkbox      | Whether to sync | 
-| `[notion-to-jekyll] title`      | Title         | Post title      |
-| `[notion-to-jekyll] tags`       | Multi-select  | Post tags       |
-| `[notion-to-jekyll] categories` | Multi-select  | Post categories |
-| `[notion-to-jekyll] sync time`  | Date          | Post sync time  |
-| `[notion-to-jekyll] post path`  | Text          | Post path       |
+| `Ready`      | Checkbox      | Whether to sync | 
+| `Title`      | Title         | Post title      |
+| `Tags`       | Multi-select  | Post tags       |
+| `Categories` | Multi-select  | Post categories |
+| `Sync time`  | Date          | Post sync time  |
+| `Post path`  | Text          | Post path       |
 
 > [!CAUTION]
 >
