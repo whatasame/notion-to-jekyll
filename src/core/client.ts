@@ -37,7 +37,7 @@ export class NotionToJekyllClient {
     });
     this.#n2mClient = new NotionToMarkdown({
       notionClient: this.#notionClient,
-      config: { separateChildPage: true }
+      config: { separateChildPage: true, convertImagesToBase64: true }
     });
     this.#databaseId = options.notion.databaseId;
     this.#githubWorkspace = options.github.workspace;
