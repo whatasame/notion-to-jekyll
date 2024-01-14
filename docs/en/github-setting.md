@@ -33,18 +33,6 @@ Click the `New repository secret` button again.
 
 Enter the Notion database ID in `Name` and enter the Notion database ID in `Secret`.
 
-## Set up GitHub action permission
-
-In order to synchronize Notion posts to the repository, GitHub actions write permission is required.
-
-![github-actions](https://github.com/whatasame/notion-to-jekyll/assets/97666463/ff15916b-1acb-4e3b-b1e8-4939431b4514)
-
-Go to `Settings` > `Actions` > `General` in your Jekyll repository.
-
-![github-actions-permission](https://github.com/whatasame/notion-to-jekyll/assets/97666463/17922eef-06ff-42aa-9207-856967a7c1d5)
-
-Select `Read and write permissions` and press `Save` to save.
-
 ## Next
 
 If you are ready, go to [next](../../README.md#github-action-setting) to finish GitHub setting.

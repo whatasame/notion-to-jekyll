@@ -33,18 +33,6 @@ Jekyll 레포지토리에서 `Settings` > `Secrets and variables` > `Actions`로
 
 Notion 데이터베이스 ID를 `Name`에 `NOTION_DATABASE_ID`를 입력하고 `Secret`에 Notion 데이터베이스 ID를 입력합니다.
 
-## GitHub action 권한 설정
-
-Notion의 글을 레포지토리에 동기화하기 위해선 GitHub actions의 쓰기 권한이 필요합니다.
-
-![github-actions](https://github.com/whatasame/notion-to-jekyll/assets/97666463/ff15916b-1acb-4e3b-b1e8-4939431b4514)
-
-Jekyll 레포지토리에서 `Settings` > `Actions` > `General`로 이동합니다.
-
-![github-actions-permission](https://github.com/whatasame/notion-to-jekyll/assets/97666463/17922eef-06ff-42aa-9207-856967a7c1d5)
-
-`Read and write permissions`를 선택하고 `Save`를 눌러 저장합니다.
-
 ## 다음으로
 
 모든 준비가 끝났다면 [다음](./README.md#github-action-설정)으로 넘어가서 GitHub actions 설정을 마무리해주세요.
