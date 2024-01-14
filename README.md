@@ -90,11 +90,18 @@ For example, if you want to change the `post_dir` option, you can write as follo
 You may get the following error during the synchronization process.
 
 ```
-Permission to {username}/{repository} denied to github-actions[bot]
+error: remote: Permission to {username}/{repository}.git denied to github-actions[bot].
+
+fatal: unable to access 'https://github.com/{username}/{repository}.git/': The requested URL returned error: 403
 ```
 
 This problem occurs because GitHub action does not have write permission to the repository. To solve this problem,
-please refer to [Set up GitHub repository](./docs/en/github-setting.md) for GitHub workflow permission setting.
+please ensure that you have set up the GitHub workflow permission in `notion-to-jekyll.yml` file.
+
+```yaml
+permissions:
+  contents: write
+```
 
 ## Contributing
 

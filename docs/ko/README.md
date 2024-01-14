@@ -83,11 +83,18 @@ Notion to Jekyll은 다음과 같은 옵션을 제공합니다.
 동기화 과정에서 다음과 같은 에러가 발생할 수 있습니다.
 
 ```
-Permission to {username}/{repository} denied to github-actions[bot]
+error: remote: Permission to {username}/{repository}.git denied to github-actions[bot].
+
+fatal: unable to access 'https://github.com/{username}/{repository}.git/': The requested URL returned error: 403
 ```
 
-이는 GitHub action이 레포지토리에 쓰기 권한이 없어서 발생하는 문제입니다. 이를 해결하기 위해서는 [GitHub 레포지토리 설정](./github-setting)에서 GitHub workflow 권한
-설정을 참고하세요.
+이는 GitHub action이 레포지토리에 쓰기 권한이 없어서 발생하는 문제입니다. 이를 해결하기 위해서는 `notion-to-jekyll.yml` 파일에 GitHub workflow 권한이 설정되어있는지
+확인해주세요.
+
+```yaml
+permissions:
+  contents: write
+```
 
 ## 기여
 
