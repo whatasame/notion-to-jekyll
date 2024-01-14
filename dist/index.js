@@ -33576,7 +33576,7 @@ class NotionToJekyllClient {
         }), "f");
         __classPrivateFieldSet(this, _NotionToJekyllClient_n2mClient, new notion_to_md_1.NotionToMarkdown({
             notionClient: __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f"),
-            config: { separateChildPage: true }
+            config: { separateChildPage: true, convertImagesToBase64: true }
         }), "f");
         __classPrivateFieldSet(this, _NotionToJekyllClient_databaseId, options.notion.databaseId, "f");
         __classPrivateFieldSet(this, _NotionToJekyllClient_githubWorkspace, options.github.workspace, "f");
