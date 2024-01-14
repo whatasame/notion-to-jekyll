@@ -38,6 +38,9 @@ on:
     - cron: '0 0 * * *' # Run every midnight
   workflow_dispatch:
 
+permissions:
+  contents: write # Required for GitHub action to save files
+
 jobs:
   notion-to-jekyll:
     runs-on: ubuntu-latest
