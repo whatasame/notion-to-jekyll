@@ -32,6 +32,9 @@ on:
     - cron: '0 0 * * *' # 매일 자정마다 실행
   workflow_dispatch:
 
+permissions:
+  contents: write # GitHub action이 파일을 저장하기 위해 필요
+
 jobs:
   notion-to-jekyll:
     runs-on: ubuntu-latest
@@ -40,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Notion to Jekyll synchronization
-        uses: whatasame/notion-to-jekyll@v0 # latest version
+        uses: whatasame/notion-to-jekyll@v0 # 최신 버전
         with:
           notion_api_key: ${{ secrets.NOTION_API_KEY }}
           notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
