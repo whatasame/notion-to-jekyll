@@ -15253,132 +15253,6 @@ module.exports = buildConnector
 
 /***/ }),
 
-/***/ 4462:
-/***/ ((module) => {
-
-"use strict";
-
-
-/** @type {Record<string, string | undefined>} */
-const headerNameLowerCasedRecord = {}
-
-// https://developer.mozilla.org/docs/Web/HTTP/Headers
-const wellknownHeaderNames = [
-  'Accept',
-  'Accept-Encoding',
-  'Accept-Language',
-  'Accept-Ranges',
-  'Access-Control-Allow-Credentials',
-  'Access-Control-Allow-Headers',
-  'Access-Control-Allow-Methods',
-  'Access-Control-Allow-Origin',
-  'Access-Control-Expose-Headers',
-  'Access-Control-Max-Age',
-  'Access-Control-Request-Headers',
-  'Access-Control-Request-Method',
-  'Age',
-  'Allow',
-  'Alt-Svc',
-  'Alt-Used',
-  'Authorization',
-  'Cache-Control',
-  'Clear-Site-Data',
-  'Connection',
-  'Content-Disposition',
-  'Content-Encoding',
-  'Content-Language',
-  'Content-Length',
-  'Content-Location',
-  'Content-Range',
-  'Content-Security-Policy',
-  'Content-Security-Policy-Report-Only',
-  'Content-Type',
-  'Cookie',
-  'Cross-Origin-Embedder-Policy',
-  'Cross-Origin-Opener-Policy',
-  'Cross-Origin-Resource-Policy',
-  'Date',
-  'Device-Memory',
-  'Downlink',
-  'ECT',
-  'ETag',
-  'Expect',
-  'Expect-CT',
-  'Expires',
-  'Forwarded',
-  'From',
-  'Host',
-  'If-Match',
-  'If-Modified-Since',
-  'If-None-Match',
-  'If-Range',
-  'If-Unmodified-Since',
-  'Keep-Alive',
-  'Last-Modified',
-  'Link',
-  'Location',
-  'Max-Forwards',
-  'Origin',
-  'Permissions-Policy',
-  'Pragma',
-  'Proxy-Authenticate',
-  'Proxy-Authorization',
-  'RTT',
-  'Range',
-  'Referer',
-  'Referrer-Policy',
-  'Refresh',
-  'Retry-After',
-  'Sec-WebSocket-Accept',
-  'Sec-WebSocket-Extensions',
-  'Sec-WebSocket-Key',
-  'Sec-WebSocket-Protocol',
-  'Sec-WebSocket-Version',
-  'Server',
-  'Server-Timing',
-  'Service-Worker-Allowed',
-  'Service-Worker-Navigation-Preload',
-  'Set-Cookie',
-  'SourceMap',
-  'Strict-Transport-Security',
-  'Supports-Loading-Mode',
-  'TE',
-  'Timing-Allow-Origin',
-  'Trailer',
-  'Transfer-Encoding',
-  'Upgrade',
-  'Upgrade-Insecure-Requests',
-  'User-Agent',
-  'Vary',
-  'Via',
-  'WWW-Authenticate',
-  'X-Content-Type-Options',
-  'X-DNS-Prefetch-Control',
-  'X-Frame-Options',
-  'X-Permitted-Cross-Domain-Policies',
-  'X-Powered-By',
-  'X-Requested-With',
-  'X-XSS-Protection'
-]
-
-for (let i = 0; i < wellknownHeaderNames.length; ++i) {
-  const key = wellknownHeaderNames[i]
-  const lowerCasedKey = key.toLowerCase()
-  headerNameLowerCasedRecord[key] = headerNameLowerCasedRecord[lowerCasedKey] =
-    lowerCasedKey
-}
-
-// Note: object prototypes should not be able to be referenced. e.g. `Object#hasOwnProperty`.
-Object.setPrototypeOf(headerNameLowerCasedRecord, null)
-
-module.exports = {
-  wellknownHeaderNames,
-  headerNameLowerCasedRecord
-}
-
-
-/***/ }),
-
 /***/ 8045:
 /***/ ((module) => {
 
@@ -16209,7 +16083,6 @@ const { InvalidArgumentError } = __nccwpck_require__(8045)
 const { Blob } = __nccwpck_require__(4300)
 const nodeUtil = __nccwpck_require__(3837)
 const { stringify } = __nccwpck_require__(3477)
-const { headerNameLowerCasedRecord } = __nccwpck_require__(4462)
 
 const [nodeMajor, nodeMinor] = process.versions.node.split('.').map(v => Number(v))
 
@@ -16417,15 +16290,6 @@ const KEEPALIVE_TIMEOUT_EXPR = /timeout=(\d+)/
 function parseKeepAliveTimeout (val) {
   const m = val.toString().match(KEEPALIVE_TIMEOUT_EXPR)
   return m ? parseInt(m[1], 10) * 1000 : null
-}
-
-/**
- * Retrieves a header name and returns its lowercase value.
- * @param {string | Buffer} value Header name
- * @returns {string}
- */
-function headerNameToString (value) {
-  return headerNameLowerCasedRecord[value] || value.toLowerCase()
 }
 
 function parseHeaders (headers, obj = {}) {
@@ -16699,7 +16563,6 @@ module.exports = {
   isIterable,
   isAsyncIterable,
   isDestroyed,
-  headerNameToString,
   parseRawHeaders,
   parseHeaders,
   parseKeepAliveTimeout,
@@ -20836,9 +20699,6 @@ function httpRedirectFetch (fetchParams, response) {
     // https://fetch.spec.whatwg.org/#cors-non-wildcard-request-header-name
     request.headersList.delete('authorization')
 
-    // https://fetch.spec.whatwg.org/#authentication-entries
-    request.headersList.delete('proxy-authorization', true)
-
     // "Cookie" and "Host" are forbidden request-headers, which undici doesn't implement.
     request.headersList.delete('cookie')
     request.headersList.delete('host')
@@ -23347,18 +23207,14 @@ const { isBlobLike, toUSVString, ReadableStreamFrom } = __nccwpck_require__(3983
 const assert = __nccwpck_require__(9491)
 const { isUint8Array } = __nccwpck_require__(9830)
 
-let supportedHashes = []
-
 // https://nodejs.org/api/crypto.html#determining-if-crypto-support-is-unavailable
 /** @type {import('crypto')|undefined} */
 let crypto
 
 try {
   crypto = __nccwpck_require__(6113)
-  const possibleRelevantHashes = ['sha256', 'sha384', 'sha512']
-  supportedHashes = crypto.getHashes().filter((hash) => possibleRelevantHashes.includes(hash))
-/* c8 ignore next 3 */
 } catch {
+
 }
 
 function responseURL (response) {
@@ -23886,56 +23742,66 @@ function bytesMatch (bytes, metadataList) {
     return true
   }
 
-  // 3. If response is not eligible for integrity validation, return false.
-  // TODO
-
-  // 4. If parsedMetadata is the empty set, return true.
+  // 3. If parsedMetadata is the empty set, return true.
   if (parsedMetadata.length === 0) {
     return true
   }
 
-  // 5. Let metadata be the result of getting the strongest
+  // 4. Let metadata be the result of getting the strongest
   //    metadata from parsedMetadata.
-  const strongest = getStrongestMetadata(parsedMetadata)
-  const metadata = filterMetadataListByAlgorithm(parsedMetadata, strongest)
+  const list = parsedMetadata.sort((c, d) => d.algo.localeCompare(c.algo))
+  // get the strongest algorithm
+  const strongest = list[0].algo
+  // get all entries that use the strongest algorithm; ignore weaker
+  const metadata = list.filter((item) => item.algo === strongest)
 
-  // 6. For each item in metadata:
+  // 5. For each item in metadata:
   for (const item of metadata) {
     // 1. Let algorithm be the alg component of item.
     const algorithm = item.algo
 
     // 2. Let expectedValue be the val component of item.
-    const expectedValue = item.hash
+    let expectedValue = item.hash
 
     // See https://github.com/web-platform-tests/wpt/commit/e4c5cc7a5e48093220528dfdd1c4012dc3837a0e
     // "be liberal with padding". This is annoying, and it's not even in the spec.
 
+    if (expectedValue.endsWith('==')) {
+      expectedValue = expectedValue.slice(0, -2)
+    }
+
     // 3. Let actualValue be the result of applying algorithm to bytes.
     let actualValue = crypto.createHash(algorithm).update(bytes).digest('base64')
 
-    if (actualValue[actualValue.length - 1] === '=') {
-      if (actualValue[actualValue.length - 2] === '=') {
-        actualValue = actualValue.slice(0, -2)
-      } else {
-        actualValue = actualValue.slice(0, -1)
-      }
+    if (actualValue.endsWith('==')) {
+      actualValue = actualValue.slice(0, -2)
     }
 
     // 4. If actualValue is a case-sensitive match for expectedValue,
     //    return true.
-    if (compareBase64Mixed(actualValue, expectedValue)) {
+    if (actualValue === expectedValue) {
+      return true
+    }
+
+    let actualBase64URL = crypto.createHash(algorithm).update(bytes).digest('base64url')
+
+    if (actualBase64URL.endsWith('==')) {
+      actualBase64URL = actualBase64URL.slice(0, -2)
+    }
+
+    if (actualBase64URL === expectedValue) {
       return true
     }
   }
 
-  // 7. Return false.
+  // 6. Return false.
   return false
 }
 
 // https://w3c.github.io/webappsec-subresource-integrity/#grammardef-hash-with-options
 // https://www.w3.org/TR/CSP2/#source-list-syntax
 // https://www.rfc-editor.org/rfc/rfc5234#appendix-B.1
-const parseHashWithOptions = /(?<algo>sha256|sha384|sha512)-((?<hash>[A-Za-z0-9+/]+|[A-Za-z0-9_-]+)={0,2}(?:\s|$)( +[!-~]*)?)?/i
+const parseHashWithOptions = /((?<algo>sha256|sha384|sha512)-(?<hash>[A-z0-9+/]{1}.*={0,2}))( +[\x21-\x7e]?)?/i
 
 /**
  * @see https://w3c.github.io/webappsec-subresource-integrity/#parse-metadata
@@ -23949,6 +23815,8 @@ function parseMetadata (metadata) {
   // 2. Let empty be equal to true.
   let empty = true
 
+  const supportedHashes = crypto.getHashes()
+
   // 3. For each token returned by splitting metadata on spaces:
   for (const token of metadata.split(' ')) {
     // 1. Set empty to false.
@@ -23958,11 +23826,7 @@ function parseMetadata (metadata) {
     const parsedToken = parseHashWithOptions.exec(token)
 
     // 3. If token does not parse, continue to the next token.
-    if (
-      parsedToken === null ||
-      parsedToken.groups === undefined ||
-      parsedToken.groups.algo === undefined
-    ) {
+    if (parsedToken === null || parsedToken.groups === undefined) {
       // Note: Chromium blocks the request at this point, but Firefox
       // gives a warning that an invalid integrity was given. The
       // correct behavior is to ignore these, and subsequently not
@@ -23971,11 +23835,11 @@ function parseMetadata (metadata) {
     }
 
     // 4. Let algorithm be the hash-algo component of token.
-    const algorithm = parsedToken.groups.algo.toLowerCase()
+    const algorithm = parsedToken.groups.algo
 
     // 5. If algorithm is a hash function recognized by the user
     //    agent, add the parsed token to result.
-    if (supportedHashes.includes(algorithm)) {
+    if (supportedHashes.includes(algorithm.toLowerCase())) {
       result.push(parsedToken.groups)
     }
   }
@@ -23986,82 +23850,6 @@ function parseMetadata (metadata) {
   }
 
   return result
-}
-
-/**
- * @param {{ algo: 'sha256' | 'sha384' | 'sha512' }[]} metadataList
- */
-function getStrongestMetadata (metadataList) {
-  // Let algorithm be the algo component of the first item in metadataList.
-  // Can be sha256
-  let algorithm = metadataList[0].algo
-  // If the algorithm is sha512, then it is the strongest
-  // and we can return immediately
-  if (algorithm[3] === '5') {
-    return algorithm
-  }
-
-  for (let i = 1; i < metadataList.length; ++i) {
-    const metadata = metadataList[i]
-    // If the algorithm is sha512, then it is the strongest
-    // and we can break the loop immediately
-    if (metadata.algo[3] === '5') {
-      algorithm = 'sha512'
-      break
-    // If the algorithm is sha384, then a potential sha256 or sha384 is ignored
-    } else if (algorithm[3] === '3') {
-      continue
-    // algorithm is sha256, check if algorithm is sha384 and if so, set it as
-    // the strongest
-    } else if (metadata.algo[3] === '3') {
-      algorithm = 'sha384'
-    }
-  }
-  return algorithm
-}
-
-function filterMetadataListByAlgorithm (metadataList, algorithm) {
-  if (metadataList.length === 1) {
-    return metadataList
-  }
-
-  let pos = 0
-  for (let i = 0; i < metadataList.length; ++i) {
-    if (metadataList[i].algo === algorithm) {
-      metadataList[pos++] = metadataList[i]
-    }
-  }
-
-  metadataList.length = pos
-
-  return metadataList
-}
-
-/**
- * Compares two base64 strings, allowing for base64url
- * in the second string.
- *
-* @param {string} actualValue always base64
- * @param {string} expectedValue base64 or base64url
- * @returns {boolean}
- */
-function compareBase64Mixed (actualValue, expectedValue) {
-  if (actualValue.length !== expectedValue.length) {
-    return false
-  }
-  for (let i = 0; i < actualValue.length; ++i) {
-    if (actualValue[i] !== expectedValue[i]) {
-      if (
-        (actualValue[i] === '+' && expectedValue[i] === '-') ||
-        (actualValue[i] === '/' && expectedValue[i] === '_')
-      ) {
-        continue
-      }
-      return false
-    }
-  }
-
-  return true
 }
 
 // https://w3c.github.io/webappsec-upgrade-insecure-requests/#upgrade-request
@@ -24479,8 +24267,7 @@ module.exports = {
   urlHasHttpsScheme,
   urlIsHttpHttpsScheme,
   readAllBytes,
-  normalizeMethodRecord,
-  parseMetadata
+  normalizeMethodRecord
 }
 
 
@@ -26567,17 +26354,12 @@ function parseLocation (statusCode, headers) {
 
 // https://tools.ietf.org/html/rfc7231#section-6.4.4
 function shouldRemoveHeader (header, removeContent, unknownOrigin) {
-  if (header.length === 4) {
-    return util.headerNameToString(header) === 'host'
-  }
-  if (removeContent && util.headerNameToString(header).startsWith('content-')) {
-    return true
-  }
-  if (unknownOrigin && (header.length === 13 || header.length === 6 || header.length === 19)) {
-    const name = util.headerNameToString(header)
-    return name === 'authorization' || name === 'cookie' || name === 'proxy-authorization'
-  }
-  return false
+  return (
+    (header.length === 4 && header.toString().toLowerCase() === 'host') ||
+    (removeContent && header.toString().toLowerCase().indexOf('content-') === 0) ||
+    (unknownOrigin && header.length === 13 && header.toString().toLowerCase() === 'authorization') ||
+    (unknownOrigin && header.length === 6 && header.toString().toLowerCase() === 'cookie')
+  )
 }
 
 // https://tools.ietf.org/html/rfc7231#section-6.4
@@ -33769,7 +33551,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _NotionToJekyllClient_notionClient, _NotionToJekyllClient_n2mClient, _NotionToJekyllClient_databaseId, _NotionToJekyllClient_githubWorkspace, _NotionToJekyllClient_postDir;
+var _NotionToJekyllClient_instances, _NotionToJekyllClient_notionClient, _NotionToJekyllClient_n2mClient, _NotionToJekyllClient_notionOptions, _NotionToJekyllClient_githubOptions, _NotionToJekyllClient_postOptions, _NotionToJekyllClient_getFrontMatter;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NotionToJekyllClient = void 0;
 const client_1 = __nccwpck_require__(324);
@@ -33781,13 +33563,15 @@ const core = __importStar(__nccwpck_require__(2186));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const file_manager_1 = __nccwpck_require__(1277);
 const filter_1 = __nccwpck_require__(2284);
+const fs = __importStar(__nccwpck_require__(5630));
 class NotionToJekyllClient {
     constructor(options) {
+        _NotionToJekyllClient_instances.add(this);
         _NotionToJekyllClient_notionClient.set(this, void 0);
         _NotionToJekyllClient_n2mClient.set(this, void 0);
-        _NotionToJekyllClient_databaseId.set(this, void 0);
-        _NotionToJekyllClient_githubWorkspace.set(this, void 0);
-        _NotionToJekyllClient_postDir.set(this, void 0);
+        _NotionToJekyllClient_notionOptions.set(this, void 0);
+        _NotionToJekyllClient_githubOptions.set(this, void 0);
+        _NotionToJekyllClient_postOptions.set(this, void 0);
         __classPrivateFieldSet(this, _NotionToJekyllClient_notionClient, new client_1.Client({
             auth: options.notion.apiKey,
             logLevel: core.isDebug() ? client_1.LogLevel.DEBUG : client_1.LogLevel.WARN
@@ -33796,14 +33580,14 @@ class NotionToJekyllClient {
             notionClient: __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f"),
             config: { separateChildPage: true, convertImagesToBase64: true }
         }), "f");
-        __classPrivateFieldSet(this, _NotionToJekyllClient_databaseId, options.notion.databaseId, "f");
-        __classPrivateFieldSet(this, _NotionToJekyllClient_githubWorkspace, options.github.workspace, "f");
-        __classPrivateFieldSet(this, _NotionToJekyllClient_postDir, options.github.post_dir, "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_notionOptions, options.notion, "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_githubOptions, options.github, "f");
+        __classPrivateFieldSet(this, _NotionToJekyllClient_postOptions, options.post, "f");
     }
     validateDatabaseProperties() {
         return __awaiter(this, void 0, void 0, function* () {
             const db = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.retrieve({
-                database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f")
+                database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_notionOptions, "f").databaseId
             });
             if (!(0, client_1.isFullDatabase)(db)) {
                 throw new Error('Not a database');
@@ -33812,14 +33596,14 @@ class NotionToJekyllClient {
         });
     }
     validatePostDirectory() {
-        if (!(0, file_manager_1.isExistPath)(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"))) {
-            throw new Error(`⛔️ Post directory "${__classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f")}" does not exist.`);
+        if (!(0, file_manager_1.isExistPath)(__classPrivateFieldGet(this, _NotionToJekyllClient_githubOptions, "f").workspace, __classPrivateFieldGet(this, _NotionToJekyllClient_postOptions, "f").dir)) {
+            throw new Error(`⛔️ Post directory "${__classPrivateFieldGet(this, _NotionToJekyllClient_postOptions, "f").dir}" does not exist.`);
         }
     }
     getCheckedPages(page_size = 100, cursor) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield __classPrivateFieldGet(this, _NotionToJekyllClient_notionClient, "f").databases.query({
-                database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_databaseId, "f"),
+                database_id: __classPrivateFieldGet(this, _NotionToJekyllClient_notionOptions, "f").databaseId,
                 page_size,
                 start_cursor: cursor
             });
@@ -33874,11 +33658,18 @@ class NotionToJekyllClient {
         return __awaiter(this, void 0, void 0, function* () {
             const saveResults = [];
             for (const page of pages) {
+                const frontMatter = __classPrivateFieldGet(this, _NotionToJekyllClient_instances, "m", _NotionToJekyllClient_getFrontMatter).call(this, page, __classPrivateFieldGet(this, _NotionToJekyllClient_postOptions, "f"));
                 const markdown = yield this.getMarkdownAsString(page.id);
-                const directory = path_1.default.join(__classPrivateFieldGet(this, _NotionToJekyllClient_githubWorkspace, "f"), __classPrivateFieldGet(this, _NotionToJekyllClient_postDir, "f"));
-                const result = yield (0, file_manager_1.saveMarkdownAsFile)(directory, page, markdown);
-                saveResults.push(result);
-                console.log(`📝 Saved to ${result.post_path}`);
+                const post = [frontMatter, markdown].join('\n\n');
+                const directory = path_1.default.join(__classPrivateFieldGet(this, _NotionToJekyllClient_githubOptions, "f").workspace, __classPrivateFieldGet(this, _NotionToJekyllClient_postOptions, "f").dir);
+                const fullPath = (0, mapper_1.toPath)(directory, page.created_time, page.title);
+                yield fs.outputFile(fullPath, post, 'utf-8');
+                saveResults.push({
+                    page_id: page.id,
+                    synchronized_time: new Date().toISOString(),
+                    post_path: fullPath
+                });
+                console.log(`📝 Saved to ${fullPath}`);
             }
             return saveResults;
         });
@@ -33891,7 +33682,19 @@ class NotionToJekyllClient {
     }
 }
 exports.NotionToJekyllClient = NotionToJekyllClient;
-_NotionToJekyllClient_notionClient = new WeakMap(), _NotionToJekyllClient_n2mClient = new WeakMap(), _NotionToJekyllClient_databaseId = new WeakMap(), _NotionToJekyllClient_githubWorkspace = new WeakMap(), _NotionToJekyllClient_postDir = new WeakMap();
+_NotionToJekyllClient_notionClient = new WeakMap(), _NotionToJekyllClient_n2mClient = new WeakMap(), _NotionToJekyllClient_notionOptions = new WeakMap(), _NotionToJekyllClient_githubOptions = new WeakMap(), _NotionToJekyllClient_postOptions = new WeakMap(), _NotionToJekyllClient_instances = new WeakSet(), _NotionToJekyllClient_getFrontMatter = function _NotionToJekyllClient_getFrontMatter(page, options) {
+    const lines = [];
+    lines.push('---');
+    if (!options.skipLayout) {
+        lines.push(`layout: ${options.layout}`);
+    }
+    lines.push(`title: |\n    ${page.title}`);
+    lines.push(`date: ${page.created_time}`);
+    lines.push(`categories: [${page.categories.join(', ')}]`);
+    lines.push(`tags: [${page.tags.join(', ')}]`);
+    lines.push('---');
+    return lines.join('\n');
+};
 
 
 /***/ }),
@@ -33974,55 +33777,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.start = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const client_1 = __nccwpck_require__(2344);
 const filter_1 = __nccwpck_require__(2284);
 const file_manager_1 = __nccwpck_require__(1277);
 const child_process_1 = __nccwpck_require__(2081);
-const INPUTS = {
-    NOTION_API_KEY: 'notion_api_key',
-    NOTION_DATABASE_ID: 'notion_database_id',
-    GITHUB_WORKSPACE: 'github_workspace',
-    POST_DIR: 'post_dir'
-};
 function start() {
     return __awaiter(this, void 0, void 0, function* () {
-        const options = importOptions();
-        const client = new client_1.NotionToJekyllClient(options);
+        const inputs = {
+            notion: {
+                apiKey: core.getInput('notion_api_key', {
+                    required: true
+                }),
+                databaseId: core.getInput('notion_database_id', {
+                    required: true
+                })
+            },
+            github: {
+                workspace: core.getInput('github_workspace')
+            },
+            post: {
+                dir: core.getInput('post_dir'),
+                layout: core.getInput('post_layout'),
+                skipLayout: core.getBooleanInput('post_skip_layout')
+            }
+        };
+        const client = new client_1.NotionToJekyllClient(inputs);
         client.validatePostDirectory();
         yield client.validateDatabaseProperties();
         const checkedPages = yield client.getCheckedPages();
         // TODO: Refactor
-        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(options.github.workspace, options.github.post_dir), ['.md', '.markdown']), checkedPages.map(page => page.title)));
+        (0, file_manager_1.removeFiles)((0, filter_1.filterPathsToDelete)(yield (0, file_manager_1.getFilePaths)(path_1.default.join(inputs.github.workspace, inputs.post.dir), [
+            '.md',
+            '.markdown'
+        ]), checkedPages.map(page => page.title)));
         const targetPages = checkedPages.filter(filter_1.isNotSynchronized);
         console.log(`📝 Found ${targetPages.length} pages to synchronize.`);
         const saveResults = yield client.savePagesAsMarkdown(targetPages);
         execBash(path_1.default.join(__dirname, '../scripts/run.sh'));
         yield client.updateSaveResults(saveResults);
     });
-}
-exports.start = start;
-function importOptions() {
-    return {
-        notion: {
-            apiKey: core.getInput(INPUTS.NOTION_API_KEY, {
-                required: true
-            }),
-            databaseId: core.getInput(INPUTS.NOTION_DATABASE_ID, {
-                required: true
-            })
-        },
-        github: {
-            workspace: core.getInput(INPUTS.GITHUB_WORKSPACE, {
-                required: true
-            }),
-            post_dir: core.getInput(INPUTS.POST_DIR, {
-                required: true
-            })
-        }
-    };
 }
 function execBash(script) {
     var _a;
@@ -34096,35 +33891,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isExistPath = exports.removeFiles = exports.getFilePaths = exports.saveMarkdownAsFile = void 0;
+exports.isExistPath = exports.removeFiles = exports.getFilePaths = void 0;
 const fs = __importStar(__nccwpck_require__(5630));
 const path_1 = __importDefault(__nccwpck_require__(1017));
-const mapper_1 = __nccwpck_require__(3082);
-function saveMarkdownAsFile(directory, page, markdown) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const fullPath = (0, mapper_1.toPath)(directory, page.created_time, page.title);
-        const data = [generateMetadata(page), markdown].join('\n\n');
-        yield fs.outputFile(fullPath, data, 'utf-8');
-        return {
-            page_id: page.id,
-            synchronized_time: new Date().toISOString(),
-            post_path: fullPath
-        };
-    });
-}
-exports.saveMarkdownAsFile = saveMarkdownAsFile;
-function generateMetadata(page) {
-    const metadataLines = [
-        '---',
-        'layout: post',
-        `title: |\n    ${page.title}`,
-        `date: ${page.created_time}`,
-        `categories: [${page.categories.join(', ')}]`,
-        `tags: [${page.tags.join(', ')}]`,
-        '---'
-    ];
-    return metadataLines.join('\n');
-}
 function getFilePaths(directory, extension) {
     return __awaiter(this, void 0, void 0, function* () {
         const files = yield fs.readdir(directory);
