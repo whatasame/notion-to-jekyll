@@ -1,7 +1,5 @@
-import { Page } from '../core/model';
 import * as fs from 'fs-extra';
 import path from 'path';
-import { toPath } from './mapper';
 
 export async function getFilePaths(
   directory: string,

@@ -1,4 +1,3 @@
-import { Page } from '../../src/core/model';
 import {
   getFilePaths,
   isExistPath,
