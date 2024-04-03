@@ -28,7 +28,7 @@ inputs:
   post_layout_skip:
     description: "Post layout skip"
     required: false
-    default: "false"
+    default: false
   commit_username:
     description: "Commit username"
     required: false
