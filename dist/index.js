@@ -33800,7 +33800,7 @@ function start() {
             post: {
                 dir: core.getInput('post_dir'),
                 layout: core.getInput('post_layout'),
-                skipLayout: core.getBooleanInput('post_skip_layout')
+                skipLayout: core.getBooleanInput('post_layout_skip')
             }
         };
         const client = new client_1.NotionToJekyllClient(inputs);
