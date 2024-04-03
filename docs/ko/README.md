@@ -55,15 +55,17 @@ jobs:
 
 Notion to Jekyll은 다음과 같은 옵션을 제공합니다.
 
-| 옵션 이름                | 필수 여부 | 기본값                                   | 설명                   |
-|----------------------|-------|---------------------------------------|----------------------|
-| `notion_api_key`     | 필수    | -                                     | Notion API 키         |
-| `notion_database_id` | 필수    | -                                     | Notion 데이터베이스 ID     |
-| `post_dir`           | 선택    | `_posts`                              | Jekyll 블로그의 포스트 디렉토리 |
-| `commit_user_name`   | 선택    | `{username}`                          | Git 사용자 이름           |
-| `commit_email`       | 선택    | `{username}@users.noreply.github.com` | Git 사용자 이메일          |
-| `commit_author`      | 선택    | `{username}`                          | 커밋 작성자               |
-| `commit_message`     | 선택    | `Synchronized by Notion to Jekyll`    | 커밋 메시지               |
+| 옵션 이름                | 필수 여부 | 기본값                                   | 설명                             |
+|----------------------|-------|---------------------------------------|--------------------------------|
+| `notion_api_key`     | 필수    | -                                     | Notion API 키                   |
+| `notion_database_id` | 필수    | -                                     | Notion 데이터베이스 ID               |
+| `post_dir`           | Optional | `_posts`                             | 글이 저장될 디렉토리                    |
+| `post_layout`        | Optional | `post`                               | Jekyll front matter의 `layout` 값 |
+| `post_layout_skip`   | Optional | `false`                              | `layout`을 생성하지 않을 지 결정         |
+| `commit_user_name`   | 선택    | `{username}`                          | Git 사용자 이름                     |
+| `commit_email`       | 선택    | `{username}@users.noreply.github.com` | Git 사용자 이메일                    |
+| `commit_author`      | 선택    | `{username}`                          | 커밋 작성자                         |
+| `commit_message`     | 선택    | `Synchronized by Notion to Jekyll`    | 커밋 메시지                         |
 
 예를 들어, `post_dir` 옵션을 변경하고 싶다면 다음과 같이 작성하면 됩니다.
 
