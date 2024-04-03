@@ -62,15 +62,17 @@ run GitHub action manually.
 
 Notion to Jekyll provides the following options.
 
-| Option name          | Required | Default value                        | Description                |
-|----------------------|----------|--------------------------------------|----------------------------|
-| `notion_api_key`     | Required | -                                    | Notion API key             |
-| `notion_database_id` | Required | -                                    | Notion database ID         |
-| `post_dir`           | Optional | `_posts`                             | Jekyll blog post directory |
-| `commit_user_name`   | Optional | `{username}`                         | Git user name              |
-| `commit_email`       | Optional | `{username@users.noreply.github.com` | Git user email             |
-| `commit_author`      | Optional | `{username}`                         | Commit author              |
-| `commit_message`     | Optional | `Synchronized by Notion to Jekyll`   | Commit message             |
+| Option name          | Required | Default value                        | Description                               |
+|----------------------|----------|--------------------------------------|-------------------------------------------|
+| `notion_api_key`     | Required | -                                    | Notion API key                            |
+| `notion_database_id` | Required | -                                    | Notion database ID                        |
+| `post_dir`           | Optional | `_posts`                             | Target post directory                     |
+| `post_layout`        | Optional | `post`                               | Layout value of Jekyll front matter       |
+| `post_layout_skip`   | Optional | `false`                              | Whether to skip generating layout variable |
+| `commit_user_name`   | Optional | `{username}`                         | Git user name                             |
+| `commit_email`       | Optional | `{username@users.noreply.github.com` | Git user email                            |
+| `commit_author`      | Optional | `{username}`                         | Commit author                             |
+| `commit_message`     | Optional | `Synchronized by Notion to Jekyll`   | Commit message                            |
 
 For example, if you want to change the `post_dir` option, you can write as follows.
 

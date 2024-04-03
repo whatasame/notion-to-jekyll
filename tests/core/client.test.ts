@@ -7,8 +7,12 @@ describe('Notion to Jekyll client', () => {
       databaseId: process.env.NOTION_TO_JEKYLL_DATABASE_ID as string
     },
     github: {
-      workspace: process.env.NOTION_TO_JEKYLL_WORKSPACE as string,
-      post_dir: process.env.NOTION_TO_JEKYLL_POST_DIR as string
+      workspace: 'whatasame/notion-to-jekyll'
+    },
+    post: {
+      dir: '_posts',
+      layout: 'post',
+      skipLayout: false
     }
   });
 

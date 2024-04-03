@@ -1,21 +1,31 @@
 import * as core from '@actions/core';
 import path from 'path';
-import { NotionToJekyllClient, Options } from './core/client';
+import { NotionToJekyllClient, Inputs } from './core/client';
 import { filterPathsToDelete, isNotSynchronized } from './utils/filter';
 import { getFilePaths, removeFiles } from './utils/file-manager';
 import { spawnSync } from 'child_process';
 
-const INPUTS = {
-  NOTION_API_KEY: 'notion_api_key',
-  NOTION_DATABASE_ID: 'notion_database_id',
-  GITHUB_WORKSPACE: 'github_workspace',
-  POST_DIR: 'post_dir'
-};
+async function start(): Promise<void> {
+  const inputs: Inputs = {
+    notion: {
+      apiKey: core.getInput('notion_api_key', {
+        required: true
+      }),
+      databaseId: core.getInput('notion_database_id', {
+        required: true
+      })
+    },
+    github: {
+      workspace: core.getInput('github_workspace')
+    },
+    post: {
+      dir: core.getInput('post_dir'),
+      layout: core.getInput('post_layout'),
+      skipLayout: core.getBooleanInput('post_layout_skip')
+    }
+  };
 
-export async function start(): Promise<void> {
-  const options = importOptions();
-
-  const client = new NotionToJekyllClient(options);
+  const client = new NotionToJekyllClient(inputs);
   client.validatePostDirectory();
   await client.validateDatabaseProperties();
 
@@ -24,10 +34,10 @@ export async function start(): Promise<void> {
   // TODO: Refactor
   removeFiles(
     filterPathsToDelete(
-      await getFilePaths(
-        path.join(options.github.workspace, options.github.post_dir),
-        ['.md', '.markdown']
-      ),
+      await getFilePaths(path.join(inputs.github.workspace, inputs.post.dir), [
+        '.md',
+        '.markdown'
+      ]),
       checkedPages.map(page => page.title)
     )
   );
@@ -39,27 +49,6 @@ export async function start(): Promise<void> {
   execBash(path.join(__dirname, '../scripts/run.sh'));
 
   await client.updateSaveResults(saveResults);
-}
-
-function importOptions(): Options {
-  return {
-    notion: {
-      apiKey: core.getInput(INPUTS.NOTION_API_KEY, {
-        required: true
-      }),
-      databaseId: core.getInput(INPUTS.NOTION_DATABASE_ID, {
-        required: true
-      })
-    },
-    github: {
-      workspace: core.getInput(INPUTS.GITHUB_WORKSPACE, {
-        required: true
-      }),
-      post_dir: core.getInput(INPUTS.POST_DIR, {
-        required: true
-      })
-    }
-  };
 }
 
 function execBash(script: string): void {
